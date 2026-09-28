@@ -1,0 +1,20 @@
+<header class="topbar">
+  <button type="button" class="icon-btn topbar__menu" data-sidebar-toggle aria-label="Open navigation"><i data-lucide="menu"></i></button>
+  <a href="/dashboard" class="topbar__brand"><span class="brand__name">Yoovic</span><span class="brand__sub">Seller Central</span></a>
+  <form class="search" role="search" action="/orders/all" method="get">
+    <i data-lucide="search"></i>
+    <input type="search" name="q" placeholder="Search orders, products, SKUs..." aria-label="Search orders, products, SKUs">
+  </form>
+  <div class="topbar__actions">
+    <button type="button" class="icon-btn" aria-label="Notifications (<%= notifications.unread %> unread)">
+      <i data-lucide="bell"></i>
+      <% if (notifications.unread) { %><span class="badge"><%= notifications.unread %></span><% } %>
+    </button>
+    <button type="button" class="icon-btn topbar__messages" aria-label="Messages"><i data-lucide="message-square-more"></i></button>
+    <button type="button" class="user">
+      <span class="user__avatar"><i data-lucide="user-round"></i></span>
+      <span class="user__name"><%= seller.owner_name %></span>
+      <i data-lucide="chevron-down"></i>
+    </button>
+  </div>
+</header>

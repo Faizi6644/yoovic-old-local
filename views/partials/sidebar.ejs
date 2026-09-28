@@ -1,0 +1,56 @@
+<aside class="sidebar" id="sidebar" aria-label="Main navigation">
+  <a href="/dashboard" class="brand">
+    <span class="brand__name">Yoovic</span>
+    <span class="brand__sub">Seller Central</span>
+  </a>
+
+  <div class="store">
+    <span class="store__avatar"><i data-lucide="store"></i></span>
+    <div class="store__meta">
+      <strong><%= seller.store_name %></strong>
+      <span><img src="https://flagcdn.com/w20/<%= seller.country_code.toLowerCase() %>.png" alt="" width="14" height="10"> <%= seller.country_name %></span>
+    </div>
+    <i data-lucide="chevron-down" class="store__caret"></i>
+  </div>
+
+  <nav class="nav">
+    <% navigation.forEach((group) => { %>
+      <div class="nav__group">
+        <% if (group.title) { %><p class="nav__title"><%= group.title %></p><% } %>
+        <% group.items.forEach((item) => { %>
+          <% if (item.children) {
+               const open = item.children.some((c) => c.slug === active);
+               const subId = 'nav-sub-' + item.slug.replace(/\W+/g, '-'); %>
+            <button type="button" class="nav__link nav__toggle<%= open ? ' is-parent-active' : '' %>" data-nav-toggle aria-expanded="<%= open %>" aria-controls="<%= subId %>">
+              <i data-lucide="<%= item.icon %>"></i><span><%= item.label %></span>
+              <i data-lucide="chevron-down" class="nav__chevron"></i>
+            </button>
+            <ul class="nav__sub" id="<%= subId %>"<%= open ? '' : ' hidden' %>>
+              <% item.children.forEach((child) => { %>
+                <li>
+                  <a href="/<%= child.slug %>" class="nav__sublink<%= active === child.slug ? ' is-active' : '' %>"<%- active === child.slug ? ' aria-current="page"' : '' %>><span><%= child.label %></span><% if (child.badge && typeof navBadges !== 'undefined' && navBadges[child.slug] !== undefined) { %><span class="nav__badge nav__badge--<%= child.tone || 'info' %>"><%= navBadges[child.slug] %></span><% } %></a>
+                </li>
+              <% }) %>
+            </ul>
+          <% } else { %>
+            <a href="/<%= item.slug %>" class="nav__link<%= active === item.slug ? ' is-active' : '' %>"<%- active === item.slug ? ' aria-current="page"' : '' %>>
+              <i data-lucide="<%= item.icon %>"></i><span><%= item.label %></span>
+            </a>
+          <% } %>
+        <% }) %>
+      </div>
+    <% }) %>
+  </nav>
+
+  <div class="assistant-card">
+    <span class="bot-badge"><i data-lucide="bot"></i></span>
+    <div>
+      <strong>AI Business Assistant</strong>
+      <p>Get insights, answers and business suggestions.</p>
+    </div>
+    <button type="button" class="btn btn--primary btn--block">Chat Now</button>
+  </div>
+
+  <p class="sidebar__footer">Yoovic. All Right Reserved @Yoovic Portal CO <%= year %></p>
+</aside>
+<div class="sidebar-scrim" data-sidebar-close></div>

@@ -1,0 +1,337 @@
+<%- include('partials/head', { title: 'Dashboard' }) %>
+<%- include('partials/sidebar') %>
+
+<%
+  const kpiCards = [
+    { label: 'Total Sales', icon: 'shopping-bag', tone: 'blue', value: fmt.money(kpis.sales.value), growth: kpis.sales.growth },
+    { label: 'Total Orders', icon: 'shopping-cart', tone: 'green', value: fmt.int(kpis.orders.value), growth: kpis.orders.growth },
+    { label: 'Net Profit', icon: 'badge-dollar-sign', tone: 'violet', value: fmt.money(kpis.profit.value), growth: kpis.profit.growth },
+    { label: 'Conversion Rate', icon: 'target', tone: 'orange', value: fmt.pct(kpis.conversion.value), growth: kpis.conversion.growth },
+  ];
+  const notificationIcons = {
+    order: { icon: 'shopping-bag', tone: 'green' },
+    stock: { icon: 'triangle-alert', tone: 'red' },
+    campaign: { icon: 'megaphone', tone: 'magenta' },
+    withdrawal: { icon: 'star', tone: 'orange' },
+    review: { icon: 'message-square-heart', tone: 'blue' },
+  };
+  const chartData = {
+    trend: trend.map((d) => ({ label: fmt.shortDate(d.day), revenue: d.revenue, profit: d.profit, orders: d.orders })),
+    orderStatus: orderStatus.items.map((s) => ({ label: s.label, value: s.count })),
+    revenue: revenue.items.map((r) => ({ label: r.label, value: r.amount })),
+    stockHealth: inventory.health,
+    ads: advertising.daily.map((d) => ({ label: fmt.shortDate(d.day), spend: d.spend, sales: d.sales })),
+    customers: [
+      { label: 'New', value: customers.newCustomers },
+      { label: 'Returning', value: customers.repeatCustomers },
+    ],
+  };
+%>
+
+<main class="main">
+  <%- include('partials/topbar') %>
+
+  <div class="layout">
+    <div class="layout__center">
+
+      <!-- Overview: welcome, KPIs and the globe stage -->
+      <section class="overview panel area-overview">
+        <div class="overview__head">
+          <div class="overview__store">
+            <span class="store__avatar"><i data-lucide="store"></i></span>
+            <div class="store__meta">
+              <strong><%= seller.store_name %></strong>
+              <span><img src="https://flagcdn.com/w20/<%= seller.country_code.toLowerCase() %>.png" alt="" width="14" height="10"> <%= seller.country_name %></span>
+            </div>
+          </div>
+          <div class="overview__welcome">
+            <h1 class="overview__title">Welcome <%= seller.owner_name %></h1>
+            <p class="overview__sub">Here's what's happening with your store today.</p>
+          </div>
+          <div class="overview__tools">
+            <span class="live-pill"><span class="live-dot"></span>Live</span>
+            <div class="date-range">
+              <i data-lucide="calendar"></i>
+              <span><%= fmt.longDate(period.start) %> – <%= fmt.longDate(period.end) %></span>
+              <i data-lucide="chevron-down"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <% kpiCards.forEach((k) => { %>
+            <article class="kpi card">
+              <div class="kpi__top">
+                <span class="tile tile--<%= k.tone %>"><i data-lucide="<%= k.icon %>"></i></span>
+                <span class="kpi__label"><%= k.label %></span>
+                <span class="kpi__spark tone--<%= k.tone %>"><i data-lucide="chart-no-axes-column-increasing"></i></span>
+              </div>
+              <p class="kpi__value"><%= k.value %></p>
+              <p class="kpi__foot"><%- include('partials/delta', { g: k.growth }) %> <span>vs. last week</span></p>
+            </article>
+          <% }) %>
+          <article class="kpi card">
+            <div class="kpi__top">
+              <span class="tile tile--sky"><i data-lucide="wallet"></i></span>
+              <span class="kpi__label">Available Balance</span>
+            </div>
+            <p class="kpi__value"><%= fmt.money(kpis.balance.value) %></p>
+            <p class="kpi__foot"><span>Withdrawable</span></p>
+          </article>
+        </div>
+
+        <div class="hero-stage" id="heroStage"<% if (heroBackground) { %> style="--hero-image: url('<%= heroBackground %>')"<% } %>>
+          <button type="button" class="hero-bg-btn" data-bg-open aria-haspopup="dialog" aria-controls="bgDrawer">
+            <i data-lucide="image"></i><span>Background</span>
+          </button>
+          <ul class="hero-cards" aria-label="Recent international payouts">
+            <% payouts.forEach((p, i) => { %>
+              <li class="hero-card hero-card--<%= i + 1 %>">
+                <img class="hero-card__flag" src="https://flagcdn.com/w40/<%= p.countryCode %>.png" alt="" width="26" height="18">
+                <div class="hero-card__body">
+                  <span class="hero-card__city"><%= p.city %>, <%= p.countryLabel %></span>
+                  <% if (p.status === 'credited') { %>
+                    <strong class="hero-card__amount">+<%= fmt.moneyWhole(p.amount) %></strong>
+                    <span class="hero-card__status">Credited</span>
+                  <% } else { %>
+                    <span class="hero-card__status hero-card__status--transit">In transit</span>
+                    <span class="hero-card__pending"><%= fmt.moneyWhole(p.amount) %></span>
+                  <% } %>
+                </div>
+                <span class="hero-card__check"><i data-lucide="check"></i></span>
+              </li>
+            <% }) %>
+          </ul>
+
+          <div class="hero-bubble">
+            <p class="hero-bubble__title">Hello <%= seller.owner_name %>!</p>
+            <p>Your business is growing!</p>
+            <p>I'm here to help you find insights, improve sales and manage your store.</p>
+            <button type="button" class="btn btn--primary btn--sm">Ask Me Anything <i data-lucide="chevron-right"></i></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Row: trend, order status, revenue -->
+      <div class="row row--3">
+        <section class="card chart-card area-trend">
+          <header class="card__head">
+            <h2>Sales &amp; Profit Trend</h2>
+            <div class="card__tools">
+              <span class="legend-item"><span class="swatch swatch--bar s1"></span>Revenue</span>
+              <span class="legend-item"><span class="swatch swatch--line s3"></span>Net Profit</span>
+              <select class="select" id="trendRange" aria-label="Trend period">
+                <option value="7">Last 7 Days</option>
+                <option value="14">Last 14 Days</option>
+              </select>
+            </div>
+          </header>
+          <div class="chart-box chart-box--trend"><canvas id="trendChart" aria-label="Daily revenue and net profit" role="img"></canvas></div>
+          <div class="sr-only"><table>
+            <caption>Daily revenue, net profit and orders</caption>
+            <thead><tr><th>Day</th><th>Revenue</th><th>Net profit</th><th>Orders</th></tr></thead>
+            <tbody>
+              <% trend.forEach((d) => { %><tr><td><%= fmt.shortDate(d.day) %></td><td><%= fmt.money(d.revenue) %></td><td><%= fmt.money(d.profit) %></td><td><%= d.orders %></td></tr><% }) %>
+            </tbody>
+          </table></div>
+        </section>
+
+        <section class="card area-status">
+          <header class="card__head">
+            <h2>Order Status</h2>
+            <a class="card__link" href="/orders/all">View all <i data-lucide="arrow-right"></i></a>
+          </header>
+          <div class="donut-split">
+            <div class="donut">
+              <canvas id="orderStatusChart" role="img" aria-label="Orders by status"></canvas>
+              <div class="donut__center"><strong><%= fmt.int(orderStatus.total) %></strong><span>Total Orders</span></div>
+            </div>
+            <ul class="legend-table">
+              <% orderStatus.items.forEach((s, i) => { %>
+                <li><span class="swatch s<%= i + 1 %>"></span><span class="legend-table__label"><%= s.label %></span><span><%= s.count %></span><span class="muted"><%= fmt.pct(s.share) %></span></li>
+              <% }) %>
+            </ul>
+          </div>
+        </section>
+
+        <section class="card area-revenue">
+          <header class="card__head">
+            <h2>Revenue Breakdown</h2>
+            <a class="card__link" href="/reports">View all <i data-lucide="arrow-right"></i></a>
+          </header>
+          <div class="donut-split">
+            <div class="donut donut--lg">
+              <canvas id="revenueChart" role="img" aria-label="Revenue by component"></canvas>
+              <div class="donut__center"><strong><%= fmt.moneyWhole(revenue.total) %></strong><span>Total Revenue</span></div>
+            </div>
+            <ul class="legend-table legend-table--2">
+              <% revenue.items.forEach((r, i) => { %>
+                <li title="<%= fmt.money(r.amount) %>"><span class="swatch s<%= i + 1 %>"></span><span class="legend-table__label"><%= r.label %></span><span><%= fmt.pct(r.share) %></span></li>
+              <% }) %>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- Row: inventory, ads, customers, finance -->
+      <div class="row row--4">
+        <section class="card area-inventory">
+          <header class="card__head">
+            <h2>Inventory Intelligence</h2>
+            <a class="card__link" href="/inventory">View all <i data-lucide="arrow-right"></i></a>
+          </header>
+          <div class="donut-split donut-split--tight">
+            <div class="donut donut--sm">
+              <canvas id="stockChart" role="img" aria-label="Stock health <%= fmt.pct(inventory.health, 0) %>"></canvas>
+              <div class="donut__center"><strong><%= fmt.pct(inventory.health, 0) %></strong><span>Stock Health</span></div>
+            </div>
+            <ul class="stat-list">
+              <li><span class="tile tile--xs tile--orange"><i data-lucide="package"></i></span>Low Stock<strong><%= inventory.lowStock %></strong></li>
+              <li><span class="tile tile--xs tile--red"><i data-lucide="package-x"></i></span>Out of Stock<strong><%= inventory.outOfStock %></strong></li>
+              <li><span class="tile tile--xs tile--yellow"><i data-lucide="refresh-cw"></i></span>Restock Needed<strong><%= inventory.restockNeeded %></strong></li>
+              <li><span class="tile tile--xs tile--violet"><i data-lucide="hourglass"></i></span>Aging Inventory<strong><%= inventory.aging %></strong></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="card area-ads">
+          <header class="card__head">
+            <h2>Advertising Performance</h2>
+            <a class="card__link" href="/advertise/campaigns">View all <i data-lucide="arrow-right"></i></a>
+          </header>
+          <div class="mini-stats">
+            <div><span>Ad Spend</span><strong><%= fmt.moneyWhole(advertising.spend.value) %></strong><%- include('partials/delta', { g: advertising.spend.growth }) %></div>
+            <div><span>Attributed Sales</span><strong><%= fmt.moneyWhole(advertising.sales.value) %></strong><%- include('partials/delta', { g: advertising.sales.growth }) %></div>
+            <div><span>ROAS</span><strong><%= advertising.roas.value.toFixed(2) %></strong><%- include('partials/delta', { g: advertising.roas.growth }) %></div>
+            <div><span>Conversions</span><strong><%= fmt.int(advertising.conversions.value) %></strong><%- include('partials/delta', { g: advertising.conversions.growth }) %></div>
+          </div>
+          <div class="chart-box chart-box--mini">
+            <div class="mini-legend">
+              <span class="legend-item"><span class="swatch swatch--bar s1"></span>Spend</span>
+              <span class="legend-item"><span class="swatch swatch--line s3"></span>Attributed Sales</span>
+            </div>
+            <canvas id="adsChart" role="img" aria-label="Daily ad spend and attributed sales"></canvas>
+          </div>
+        </section>
+
+        <section class="card area-customers">
+          <header class="card__head">
+            <h2>Customer Analytics</h2>
+            <a class="card__link" href="/reports">View all <i data-lucide="arrow-right"></i></a>
+          </header>
+          <div class="mini-stats mini-stats--3">
+            <div><span>New Customers</span><strong><%= fmt.int(customers.newCustomers) %></strong><%- include('partials/delta', { g: customers.newGrowth }) %></div>
+            <div><span>Repeat Customers</span><strong><%= fmt.int(customers.repeatCustomers) %></strong><%- include('partials/delta', { g: customers.repeatGrowth }) %></div>
+            <div><span>Repeat Purchase Rate</span><strong><%= fmt.pct(customers.repeatRate) %></strong><%- include('partials/delta', { g: customers.rateGrowth }) %></div>
+          </div>
+          <div class="donut-split donut-split--tight">
+            <div class="donut donut--sm">
+              <canvas id="customersChart" role="img" aria-label="New versus returning customers"></canvas>
+              <div class="donut__center"><strong><%= fmt.int(customers.total) %></strong><span>Total Customers</span></div>
+            </div>
+            <ul class="legend-table">
+              <li><span class="swatch s1"></span><span class="legend-table__label">New</span><span><%= fmt.int(customers.newCustomers) %></span><span class="muted"><%= fmt.pct(customers.newShare) %></span></li>
+              <li><span class="swatch s3"></span><span class="legend-table__label">Returning</span><span><%= fmt.int(customers.repeatCustomers) %></span><span class="muted"><%= fmt.pct(customers.repeatShare) %></span></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="card area-finance">
+          <header class="card__head">
+            <h2>Financial Summary</h2>
+            <a class="card__link" href="/reports">View all <i data-lucide="arrow-right"></i></a>
+          </header>
+          <ul class="finance-list">
+            <% [
+              ['Withdrawable Balance', finances.withdrawable_balance, 'wallet', 'sky'],
+              ['Pending Withdraw', finances.pending_withdraw, 'clock', 'orange'],
+              ['Pending Clearance', finances.pending_clearance, 'hourglass', 'yellow'],
+              ['Already Withdrawn', finances.already_withdrawn, 'circle-check', 'green'],
+              ['Total Commission Given', finances.commission_given, 'percent', 'violet'],
+              ['Total Delivery Charges', finances.delivery_charges, 'truck', 'magenta'],
+              ['Total VAT Given', finances.vat_given, 'receipt', 'rose'],
+              ['Collected Cash', finances.collected_cash, 'banknote', 'teal'],
+            ].forEach(([label, amount, icon, tone]) => { %>
+              <li><span class="tile tile--xxs tile--<%= tone %>"><i data-lucide="<%= icon %>"></i></span><span><%= label %></span><strong><%= fmt.money(amount) %></strong></li>
+            <% }) %>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <!-- Right rail -->
+    <aside class="layout__rail">
+      <section class="card area-quick">
+        <header class="card__head">
+          <h2 class="h-lg">Quick Actions</h2>
+          <a class="card__link card__link--underline" href="/settings">Customize</a>
+        </header>
+        <div class="quick-actions">
+          <% quickActions.forEach((a) => { %>
+            <a class="quick-action" href="<%= a.href %>">
+              <span class="tile tile--<%= a.tone %>"><i data-lucide="<%= a.icon %>"></i></span>
+              <span><%= a.label %></span>
+            </a>
+          <% }) %>
+        </div>
+      </section>
+
+      <section class="card area-notifications">
+        <header class="card__head">
+          <h2 class="h-lg">Notifications Center</h2>
+          <a class="card__link" href="/settings">View all <i data-lucide="arrow-right"></i></a>
+        </header>
+        <ul class="notifications">
+          <% notifications.items.forEach((n) => { const meta = notificationIcons[n.type]; %>
+            <li class="notification<%= n.isRead ? '' : ' is-unread' %>">
+              <span class="tile tile--round tile--<%= meta.tone %>"><i data-lucide="<%= meta.icon %>"></i></span>
+              <div>
+                <p><%= n.message %></p>
+                <time datetime="<%= n.createdAt.replace(' ', 'T') %>"><%= fmt.timeAgo(n.createdAt) %></time>
+              </div>
+            </li>
+          <% }) %>
+          <% if (!notifications.items.length) { %><li class="muted">You're all caught up.</li><% } %>
+        </ul>
+      </section>
+
+      <section class="card help-card area-help">
+        <span class="bot-badge bot-badge--lg"><i data-lucide="bot"></i></span>
+        <div>
+          <strong>Need help?</strong>
+          <p>Ask our <span class="accent">AI Business Assistant</span> for insights, tips and guidance.</p>
+          <button type="button" class="btn btn--primary btn--sm">Start Chat <i data-lucide="arrow-right"></i></button>
+        </div>
+      </section>
+
+      <p class="rail-footer area-footer">Your Growth, Our Priority. <span class="live-dot"></span></p>
+    </aside>
+  </div>
+</main>
+
+<!-- Hero background picker -->
+<div class="drawer-scrim" data-bg-close hidden></div>
+<aside class="drawer" id="bgDrawer" role="dialog" aria-modal="true" aria-labelledby="bgDrawerTitle" hidden>
+  <header class="drawer__head">
+    <div>
+      <h2 id="bgDrawerTitle">Hero Background</h2>
+      <p class="muted">Pick an image or upload your own.</p>
+    </div>
+    <button type="button" class="icon-btn" data-bg-close aria-label="Close"><i data-lucide="x"></i></button>
+  </header>
+
+  <label class="dropzone" id="bgDropzone">
+    <input type="file" id="bgFile" accept="image/jpeg,image/png,image/webp" class="sr-only">
+    <span class="tile tile--blue"><i data-lucide="upload"></i></span>
+    <strong>Upload new image</strong>
+    <span class="muted">Click or drag &amp; drop · JPG, PNG, WebP · max 5 MB</span>
+    <span class="muted">Tip: wide images (1600×500 or larger) look best.</span>
+  </label>
+  <p class="drawer__status" id="bgStatus" role="status" aria-live="polite"></p>
+
+  <h3 class="drawer__subhead">Your backgrounds</h3>
+  <ul class="bg-grid" id="bgGrid" aria-label="Available backgrounds"></ul>
+</aside>
+
+<script id="dashboard-data" type="application/json"><%- JSON.stringify(chartData).replace(/</g, '\\u003c') %></script>
+<%- include('partials/foot', { scripts: ['https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js', '/js/dashboard.js', '/js/backgrounds.js'] }) %>

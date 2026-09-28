@@ -1,0 +1,70 @@
+const express = require('express');
+const pool = require('../config/db');
+const navigation = require('../config/navigation');
+const { SELLER_ID } = require('../config/seller');
+const { getDashboard } = require('../services/dashboardService');
+const { getActiveBackground } = require('../services/backgroundService');
+const { getNavBadges } = require('../services/navigationService');
+
+const router = express.Router();
+
+const QUICK_ACTIONS = [
+  { label: 'Add New Product', icon: 'package-plus', tone: 'blue', href: '/products/add' },
+  { label: 'Create Offer', icon: 'badge-percent', tone: 'green', href: '/create-offers' },
+  { label: 'Manage Inventory', icon: 'warehouse', tone: 'indigo', href: '/inventory' },
+  { label: 'View Pending Orders', icon: 'clipboard-list', tone: 'red', href: '/orders/pending' },
+  { label: 'Create Coupon', icon: 'ticket', tone: 'violet', href: '/coupons' },
+  { label: 'Advertise Product', icon: 'megaphone', tone: 'magenta', href: '/advertise/create-campaign' },
+  { label: 'Request Withdrawal', icon: 'wallet', tone: 'teal', href: '/withdraws' },
+  { label: 'View Disputes', icon: 'life-buoy', tone: 'rose', href: '/disputes' },
+  { label: 'View Reviews', icon: 'star', tone: 'orange', href: '/product-reviews' },
+  { label: 'Download Reports', icon: 'download', tone: 'sky', href: '/reports' },
+];
+
+router.use('/api/backgrounds', require('./backgrounds'));
+
+// Sidebar count badges for every page below
+router.use(async (req, res, next) => {
+  try {
+    res.locals.navBadges = await getNavBadges(SELLER_ID);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/', (req, res) => res.redirect('/dashboard'));
+
+router.get('/dashboard', async (req, res, next) => {
+  try {
+    const [data, heroBackground] = await Promise.all([getDashboard(SELLER_ID), getActiveBackground(SELLER_ID)]);
+    if (!data) return next(Object.assign(new Error(`Seller #${SELLER_ID} not found. Run "npm run db:setup".`), { status: 404 }));
+    res.render('dashboard', { ...data, heroBackground, active: 'dashboard', quickActions: QUICK_ACTIONS });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Parent items with a submenu open their first child
+navigation.flatMap((g) => g.items).filter((i) => i.children).forEach((item) => {
+  router.get(`/${item.slug}`, (req, res) => res.redirect(`/${item.children[0].slug}`));
+});
+
+// Every other sidebar entry renders a placeholder until its module is built
+const sections = navigation
+  .flatMap((g) => g.items)
+  .flatMap((i) => (i.children ? i.children.map((c) => ({ icon: i.icon, title: `${i.label}: ${c.label}`, ...c })) : [i]))
+  .filter((i) => i.slug !== 'dashboard');
+sections.forEach((item) => {
+  router.get(`/${item.slug}`, async (req, res, next) => {
+    try {
+      const [[seller]] = await pool.query('SELECT * FROM sellers WHERE id = ?', [SELLER_ID]);
+      const [[unread]] = await pool.query('SELECT COUNT(*) AS count FROM notifications WHERE seller_id = ? AND is_read = 0', [SELLER_ID]);
+      res.render('placeholder', { seller, item, active: item.slug, notifications: { unread: Number(unread.count) } });
+    } catch (err) {
+      next(err);
+    }
+  });
+});
+
+module.exports = router;

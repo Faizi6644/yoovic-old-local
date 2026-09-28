@@ -1,0 +1,12 @@
+<%- include('partials/head', { title: item.title || item.label }) %>
+<%- include('partials/sidebar') %>
+<main class="main">
+  <%- include('partials/topbar') %>
+  <section class="card placeholder">
+    <span class="placeholder__icon"><i data-lucide="<%= item.icon %>"></i></span>
+    <h1><%= item.title || item.label %></h1>
+    <p>This section is coming soon.</p>
+    <a class="btn btn--primary" href="/dashboard">Back to Dashboard</a>
+  </section>
+</main>
+<%- include('partials/foot') %>

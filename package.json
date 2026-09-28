@@ -1,0 +1,22 @@
+{
+  "name": "yoovic-seller-central",
+  "version": "1.0.0",
+  "description": "Yoovic Seller Central dashboard (Express + EJS + MySQL)",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "db:setup": "node db/setup.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.4",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "multer": "^2.4.0",
+    "mysql2": "^3.24.4"
+  }
+}

@@ -1,0 +1,16 @@
+<nav class="tabbar" aria-label="Quick navigation">
+  <% [
+    { slug: 'dashboard', label: 'Home', icon: 'house' },
+    { slug: 'orders', href: 'orders/all', label: 'Orders', icon: 'clipboard-list' },
+    { slug: 'products', href: 'products/list', label: 'Products', icon: 'package' },
+    { slug: 'inventory', label: 'Inventory', icon: 'warehouse' },
+    { slug: 'reports', label: 'Reports', icon: 'chart-line' },
+  ].forEach((tab) => { const on = active === tab.slug || active.startsWith(tab.slug + '/'); %>
+    <a href="/<%= tab.href || tab.slug %>" class="tabbar__item<%= on ? ' is-active' : '' %>"<%- on ? ' aria-current="page"' : '' %>>
+      <i data-lucide="<%= tab.icon %>"></i><span><%= tab.label %></span>
+    </a>
+  <% }) %>
+  <button type="button" class="tabbar__item" data-sidebar-toggle aria-label="More navigation">
+    <i data-lucide="ellipsis-vertical"></i><span>More</span>
+  </button>
+</nav>
