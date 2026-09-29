@@ -176,6 +176,8 @@
     const first = m.querySelector('input, select, button:not([data-modal-close]), [tabindex="0"]') || m.querySelector('button');
     if (first) first.focus();
   };
+  // The element that opened the current dialog (used to tell which section an edit belongs to)
+  PF.modalOpener = () => returnFocus;
   PF.closeModal = () => {
     if (!openModalEl) return;
     openModalEl.hidden = true;

@@ -16,8 +16,8 @@
         </span>
         <span class="pf-section__state" aria-hidden="true">
           <i data-lucide="lock" class="pf-state-locked"></i>
-          <i data-lucide="check" class="pf-state-done"></i>
-          <i data-lucide="chevron-down" class="pf-state-closed"></i>
+          <span class="pf-state-done"><i data-lucide="check"></i></span>
+          <i data-lucide="chevron-down" class="pf-state-arrow"></i>
         </span>
       </button>
       <% if (locals.tools) { %><div class="pf-section__tools"><%- include(tools) %></div><% } %>

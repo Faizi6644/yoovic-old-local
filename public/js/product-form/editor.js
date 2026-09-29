@@ -86,6 +86,7 @@
         const btn = e.target.closest('[data-cmd]');
         if (!btn) return;
         exec(area, btn.dataset.cmd);
+        PF.markEdited(area);
         save();
         syncButtons(editor);
       });

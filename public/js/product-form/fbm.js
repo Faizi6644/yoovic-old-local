@@ -100,7 +100,8 @@
       const u = PF.findUnit(editingId);
       const qty = PF.$('[data-inv="qty"]');
       if (qty.value === '' || Number(qty.value) < 0) { qty.classList.add('is-invalid'); qty.focus(); return; }
-      PF.$$('[data-inv]').forEach((f) => { u[f.dataset.inv] = f.value; });
+      PF.markEdited(PF.modalOpener());
+      PF.$('[data-inv]').forEach((f) => { u[f.dataset.inv] = f.value; });
       PF.closeModal();
       PF.emit('variations-changed');
       PF.emit('change', { path: `var:${u.id}` });
@@ -110,6 +111,7 @@
     if (del) {
       const u = PF.findUnit(del.dataset.unitDelete);
       if (u && u.id !== 'default' && (await PF.confirmDelete([u.name]))) {
+        PF.markEdited(del);
         S().variations = S().variations.filter((v) => v !== u);
         PF.ensureYpins();
         PF.emit('variations-changed');
@@ -137,6 +139,7 @@
         err.hidden = false;
         return;
       }
+      PF.markEdited(PF.modalOpener());
       targets.forEach((u) => Object.assign(u, values));
       PF.closeModal();
       PF.emit('variations-changed');

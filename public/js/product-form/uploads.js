@@ -63,6 +63,7 @@
       PF.set(key, urls[0]);
     }
     PF.clearError(box);
+    PF.markEdited(box);
     PF.renderUploads(key);
   }
 
@@ -108,10 +109,9 @@
     }
     if (e.target.closest('[data-library-use]') && libraryTarget) {
       const urls = PF.$$('[data-lib-url][aria-pressed="true"]').map((b) => b.dataset.libUrl);
-      const key = libraryTarget.dataset.upload;
+      const box = libraryTarget;
       PF.closeModal();
-      const box = PF.$(`[data-upload="${CSS.escape(key)}"]`);
-      if (box && urls.length) setImages(box, urls);
+      if (urls.length) setImages(box, urls);
     }
   });
 
@@ -123,11 +123,12 @@
     const key = box.dataset.upload;
     if (e.target.closest('[data-pick]')) box.querySelector('input[type="file"]').click();
     else if (e.target.closest('[data-library]')) PF.openLibrary(box);
-    else if (e.target.closest('[data-remove]')) { PF.set(key, null); PF.renderUploads(key); }
+    else if (e.target.closest('[data-remove]')) { PF.markEdited(box); PF.set(key, null); PF.renderUploads(key); }
     else if (e.target.closest('[data-remove-index]')) {
       const i = Number(e.target.closest('[data-remove-index]').dataset.removeIndex);
       const list = (PF.get(key) || []).slice();
       list.splice(i, 1);
+      PF.markEdited(box);
       PF.set(key, list);
       PF.renderUploads(key);
     } else if (e.target.closest('[data-reorder]')) {
@@ -177,6 +178,7 @@
         const list = (PF.get(key) || []).slice();
         const [moved] = list.splice(dragIndex, 1);
         list.splice(Number(over.dataset.index), 0, moved);
+        PF.markEdited(box);
         PF.set(key, list);
         PF.renderUploads(key);
         const thumbs = PF.$(`[data-upload="${CSS.escape(key)}"] .pf-thumbs`);

@@ -76,7 +76,9 @@
     PF.icons();
   }
 
+  let variationsOpener = null;
   PF.openVariationsDialog = () => {
+    variationsOpener = document.activeElement;
     draftAttrs = S().attributes.map((a) => ({ name: a.name, values: a.values.slice() }));
     PF.$('[data-variations-error]').hidden = true;
     renderDialog();
@@ -146,6 +148,7 @@
     S().variations = list.map((c) => existing.get(key(c)) || { ...PF.newVariation(c), sku: nextSku() });
     PF.ensureYpins();
     PF.closeModal();
+    PF.markEdited(variationsOpener);
     PF.emit('variations-changed');
     PF.emit('change', { path: 'variations' });
     PF.toast(`${S().variations.length} variation${S().variations.length === 1 ? '' : 's'} ready.`);
@@ -300,6 +303,7 @@
   });
 
   document.addEventListener('click', async (e) => {
+    const section = e.target.closest && e.target.closest('.pf-section');
     const edit = e.target.closest('[data-var-edit]');
     if (edit) {
       detailsId = edit.dataset.varEdit;
@@ -322,6 +326,7 @@
       const src = PF.findUnit(dup.dataset.varDuplicate);
       const copy = { ...JSON.parse(JSON.stringify(src)), id: PF.uid(), sku: `${src.sku}-COPY`, name: `${src.name} (Copy)` };
       S().variations.splice(S().variations.indexOf(src) + 1, 0, copy);
+      PF.markEdited(section);
       PF.ensureYpins();
       rerenderAll();
       return;
@@ -331,6 +336,7 @@
       const v = PF.findUnit(del.dataset.varDelete);
       if (v && (await PF.confirmDelete([v.name]))) {
         S().variations = S().variations.filter((x) => x !== v);
+        PF.markEdited(section);
         PF.ensureYpins();
         rerenderAll();
       }
@@ -340,6 +346,7 @@
     if (bulk) {
       const ids = PF.$$('[data-row-check="variations"]:checked').map((c) => c.value);
       if (!ids.length) { PF.toast('Select at least one variation first.', 'error'); return; }
+      PF.markEdited(section);
       if (bulk.dataset.bulkAction === 'delete') {
         if (!(await PF.confirmDelete(S().variations.filter((v) => ids.includes(v.id)).map((v) => v.name)))) return;
         S().variations = S().variations.filter((v) => !ids.includes(v.id));

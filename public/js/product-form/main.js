@@ -108,11 +108,13 @@
       e.preventDefault();
       const v = input.value.trim().replace(/,$/, '');
       if (v && !S().basic.tags.some((t) => t.toLowerCase() === v.toLowerCase())) {
+        PF.markEdited(input);
         PF.set('basic.tags', S().basic.tags.concat(v.slice(0, 40)));
         renderTags();
       }
       input.value = '';
     } else if (e.key === 'Backspace' && !input.value && S().basic.tags.length) {
+      PF.markEdited(input);
       PF.set('basic.tags', S().basic.tags.slice(0, -1));
       renderTags();
     }
@@ -122,6 +124,7 @@
     if (rm) {
       const tags = S().basic.tags.slice();
       tags.splice(Number(rm.dataset.tagRemove), 1);
+      PF.markEdited(rm);
       PF.set('basic.tags', tags);
       renderTags();
     } else if (e.target.closest('[data-tags]') && !e.target.closest('.pf-tag')) {
