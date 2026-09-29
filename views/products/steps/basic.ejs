@@ -1,0 +1,47 @@
+<div class="pf-step" data-step="basic" hidden>
+  <form class="pf-page" data-form="basic" novalidate>
+    <%- include('../components/page-header', {
+      crumbs: ['Products', 'Add New Product'],
+      heading: 'Add New Product',
+      lead: 'Create your product listing and reach millions of customers worldwide.',
+      right: '../partials/basic-header-right',
+    }) %>
+
+    <%- include('../components/section', {
+      page: 'basic', sid: 'b-info', num: 1,
+      heading: 'Basic Information',
+      sub: 'Enter product details in English and Arabic, select category, brand and more.',
+      body: '../sections/basic/info',
+      extras: [{ icon: 'user-round', heading: 'General Setup', sub: 'Select category, subcategory, brand and product type.', body: '../sections/basic/general' }],
+    }) %>
+
+    <%- include('../components/section', {
+      page: 'basic', sid: 'b-pricing', num: 2,
+      heading: 'Default Pricing & Shipping',
+      sub: 'Set your default pricing and shipping. These values will be used for your product.',
+      body: '../sections/shared/pricing',
+    }) %>
+
+    <%- include('../components/section', {
+      page: 'basic', sid: 'b-variations', num: 3, optional: true,
+      heading: 'Product Variations',
+      sub: 'Add product variations. If your product comes in different colors, sizes or other options.',
+      body: '../sections/basic/variations',
+    }) %>
+
+    <%- include('../components/section', {
+      page: 'basic', sid: 'b-media', num: 4,
+      heading: 'Product Images, Video & SEO',
+      sub: 'Upload product images, add video and optimize for search engines.',
+      body: '../sections/shared/media',
+    }) %>
+
+    <div class="pf-card pf-bottom">
+      <button type="button" class="btn pf-btn-outline" data-save-draft><i data-lucide="save"></i> Save Draft</button>
+      <div class="pf-bottom__right">
+        <button type="button" class="btn pf-btn-outline" data-preview><i data-lucide="eye"></i> Preview</button>
+        <button type="button" class="btn pf-btn-go" data-go="fulfillment" data-final="basic" disabled>Continue to Page 2 <i data-lucide="arrow-right"></i></button>
+      </div>
+    </div>
+  </form>
+</div>

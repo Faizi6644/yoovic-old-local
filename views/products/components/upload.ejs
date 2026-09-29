@@ -1,0 +1,9 @@
+<%#
+  Upload box; contents are drawn by uploads.js from state so every copy of the same key stays in sync.
+  Params: label, key (state path), kind ('single' | 'gallery' | 'seo'), req?, optLabel?, ucls?
+%>
+<div class="pf-upload-block <%= locals.ucls || '' %>">
+  <span class="pf-label pf-upload-block__label"><%= label %><% if (locals.optLabel) { %> <span class="pf-optional"><%= optLabel %></span><% } %><% if (locals.req) { %> <span class="pf-req">*</span><% } %></span>
+  <div class="pf-upload" data-upload="<%= key %>" data-kind="<%= kind %>"<% if (locals.req) { %> data-required<% } %>></div>
+  <p class="pf-error" hidden></p>
+</div>

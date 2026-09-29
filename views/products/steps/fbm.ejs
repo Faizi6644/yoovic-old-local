@@ -1,0 +1,69 @@
+<div class="pf-step" data-step="fbm" hidden>
+  <form class="pf-page" data-form="fbm" novalidate>
+    <%- include('../components/page-header', {
+      crumbs: ['Products', 'Add New Product', 'FBM Configuration'],
+      heading: 'Add New Product (FBM)',
+      headingNote: '– Seller Fulfilled',
+      lead: 'Manage your product inventory directly. Stock is auto-approved once submitted.',
+      right: '../partials/fbm-header-right',
+    }) %>
+
+    <div class="pf-card pf-summary-card">
+      <div class="pf-summary-card__main">
+        <h2 class="pf-summary-card__title">Product Summary</h2>
+        <div class="pf-product-summary" data-product-summary="fbm"></div>
+      </div>
+      <div class="pf-panel pf-fulfill-box">
+        <h3 class="pf-panel__title">Fulfillment Type</h3>
+        <label class="pf-fulfill-opt">
+          <input type="radio" name="fulfillment" value="fbm">
+          <span class="pf-fulfill-opt__radio" aria-hidden="true"><i data-lucide="check"></i></span>
+          <span><strong>FBM (Seller Fulfilled)</strong><small>You manage inventory directly. Stock is auto-approved.</small></span>
+        </label>
+        <label class="pf-fulfill-opt">
+          <input type="radio" name="fulfillment" value="fby">
+          <span class="pf-fulfill-opt__radio" aria-hidden="true"><i data-lucide="check"></i></span>
+          <span><strong>FBY (Warehouse Fulfilled)</strong><small>Send inventory to our warehouse. Requires shipment &amp; proof.</small></span>
+        </label>
+      </div>
+    </div>
+
+    <%- include('../components/section', {
+      page: 'fbm', sid: 'm-inventory', num: 1,
+      heading: 'Seller Inventory (FBM)',
+      sub: 'Manage your stock, tracking and handling time for each variation.',
+      tools: '../sections/fbm/inventory-tools',
+      body: '../sections/fbm/inventory',
+    }) %>
+
+    <%- include('../components/section', {
+      page: 'fbm', sid: 'm-pricing', num: 2,
+      heading: 'Default Pricing & Shipping (FBM)',
+      sub: 'Set default pricing, tax and shipping. You can override these values for each variation if needed.',
+      body: '../sections/shared/pricing',
+    }) %>
+
+    <%- include('../components/section', {
+      page: 'fbm', sid: 'm-variations', num: 3, countKey: 'variations',
+      heading: 'Product Variations',
+      sub: 'Each variation has its own SKU, price, stock, media and shipping settings. You can edit or add more variations.',
+      tools: '../sections/fbm/variations-tools',
+      body: '../sections/fbm/variations',
+    }) %>
+
+    <%- include('../components/section', {
+      page: 'fbm', sid: 'm-media', num: 4, note: '(FBM)',
+      heading: 'Product Media & SEO',
+      sub: 'Upload product images, video and optimize for search engines.',
+      body: '../sections/shared/media',
+    }) %>
+
+    <div class="pf-card pf-bottom">
+      <button type="button" class="btn pf-btn-outline" data-save-draft><i data-lucide="save"></i> Save Draft</button>
+      <div class="pf-bottom__right">
+        <button type="button" class="btn pf-btn-outline" data-go="basic"><i data-lucide="arrow-left"></i> Previous</button>
+        <button type="button" class="btn pf-btn-go" data-go="page3" data-final="fbm" disabled>Continue to Page 3 <i data-lucide="arrow-right"></i></button>
+      </div>
+    </div>
+  </form>
+</div>

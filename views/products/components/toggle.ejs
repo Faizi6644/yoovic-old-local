@@ -1,0 +1,6 @@
+<%# Switch. Params: page, name, label, tcls? %>
+<label class="pf-toggle <%= locals.tcls || '' %>">
+  <input type="checkbox" role="switch" name="<%= name %>">
+  <span class="pf-toggle__track" aria-hidden="true"></span>
+  <span><%= label %></span>
+</label>

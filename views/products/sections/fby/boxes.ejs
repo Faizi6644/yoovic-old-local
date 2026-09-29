@@ -1,0 +1,24 @@
+<div class="pf-split pf-split--boxes">
+  <div class="pf-panel">
+    <div class="pf-grid pf-grid--boxes">
+      <%- include('../../components/choice', { label: 'Packing Method', name: 'fby.packingMethod', tip: options.tips.packingMethod, stacked: true, opts: [{ value: 'same', label: 'Same quantity in each box' }, { value: 'different', label: 'Different quantity per box' }] }) %>
+      <div class="pf-grid pf-grid--3 pf-box-inputs">
+        <%- include('../../components/field', { label: 'Number of Boxes', name: 'fby.boxes', req: true, itype: 'number', ph: '0', min: 1, step: 1 }) %>
+        <div data-same-only>
+          <%- include('../../components/field', { label: 'Items Per Box', name: 'fby.itemsPerBox', req: true, itype: 'number', ph: '0', min: 1, step: 1 }) %>
+        </div>
+        <div class="pf-field">
+          <label class="pf-label" for="fby-total-qty">Total Quantity</label>
+          <div class="pf-control"><input class="pf-input" id="fby-total-qty" data-fby-total readonly tabindex="-1" value="0"></div>
+          <p class="pf-help">(Auto-calculated)</p>
+        </div>
+      </div>
+    </div>
+    <div class="pf-per-box" data-per-box hidden></div>
+  </div>
+  <div class="pf-panel pf-side">
+    <h3 class="pf-panel__title">Box Details Summary</h3>
+    <div class="pf-kv-row" data-box-summary></div>
+    <button type="button" class="btn pf-btn-outline btn--sm pf-side__edit" data-focus="fby.boxes"><i data-lucide="square-pen"></i> Edit</button>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<div class="pf-split pf-split--packaging">
+  <div class="pf-panel">
+    <div class="pf-grid pf-grid--2">
+      <%- include('../../components/select', { label: 'Packaging Type', name: 'fby.packagingType', tip: options.tips.packagingType, opts: options.packagingTypes }) %>
+      <%- include('../../components/field', { label: 'Units Per Case', name: 'fby.unitsPerCase', itype: 'number', ph: '0', min: 1, step: 1 }) %>
+    </div>
+  </div>
+  <div class="pf-panel">
+    <%- include('../../components/choice', { label: 'Individual Product Packaging', name: 'fby.individualPackaging', tip: options.tips.individualPackaging, opts: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }], fcls: 'pf-field--flat' }) %>
+  </div>
+</div>

@@ -80,35 +80,10 @@
           </article>
         </div>
 
-        <div class="hero-stage" id="heroStage"<% if (heroBackground) { %> style="--hero-image: url('<%= heroBackground %>')"<% } %>>
-          <button type="button" class="hero-bg-btn" data-bg-open aria-haspopup="dialog" aria-controls="bgDrawer">
-            <i data-lucide="image"></i><span>Background</span>
-          </button>
-          <ul class="hero-cards" aria-label="Recent international payouts">
-            <% payouts.forEach((p, i) => { %>
-              <li class="hero-card hero-card--<%= i + 1 %>">
-                <img class="hero-card__flag" src="https://flagcdn.com/w40/<%= p.countryCode %>.png" alt="" width="26" height="18">
-                <div class="hero-card__body">
-                  <span class="hero-card__city"><%= p.city %>, <%= p.countryLabel %></span>
-                  <% if (p.status === 'credited') { %>
-                    <strong class="hero-card__amount">+<%= fmt.moneyWhole(p.amount) %></strong>
-                    <span class="hero-card__status">Credited</span>
-                  <% } else { %>
-                    <span class="hero-card__status hero-card__status--transit">In transit</span>
-                    <span class="hero-card__pending"><%= fmt.moneyWhole(p.amount) %></span>
-                  <% } %>
-                </div>
-                <span class="hero-card__check"><i data-lucide="check"></i></span>
-              </li>
-            <% }) %>
-          </ul>
-
-          <div class="hero-bubble">
-            <p class="hero-bubble__title">Hello <%= seller.owner_name %>!</p>
-            <p>Your business is growing!</p>
-            <p>I'm here to help you find insights, improve sales and manage your store.</p>
-            <button type="button" class="btn btn--primary btn--sm">Ask Me Anything <i data-lucide="chevron-right"></i></button>
-          </div>
+        <div class="hero-stage">
+          <video class="hero-video" autoplay loop muted playsinline preload="auto" disablepictureinpicture aria-hidden="true" tabindex="-1">
+            <source src="/uploads/Videos/background_video.mp4" type="video/mp4">
+          </video>
         </div>
       </section>
 
@@ -309,29 +284,5 @@
   </div>
 </main>
 
-<!-- Hero background picker -->
-<div class="drawer-scrim" data-bg-close hidden></div>
-<aside class="drawer" id="bgDrawer" role="dialog" aria-modal="true" aria-labelledby="bgDrawerTitle" hidden>
-  <header class="drawer__head">
-    <div>
-      <h2 id="bgDrawerTitle">Hero Background</h2>
-      <p class="muted">Pick an image or upload your own.</p>
-    </div>
-    <button type="button" class="icon-btn" data-bg-close aria-label="Close"><i data-lucide="x"></i></button>
-  </header>
-
-  <label class="dropzone" id="bgDropzone">
-    <input type="file" id="bgFile" accept="image/jpeg,image/png,image/webp" class="sr-only">
-    <span class="tile tile--blue"><i data-lucide="upload"></i></span>
-    <strong>Upload new image</strong>
-    <span class="muted">Click or drag &amp; drop · JPG, PNG, WebP · max 5 MB</span>
-    <span class="muted">Tip: wide images (1600×500 or larger) look best.</span>
-  </label>
-  <p class="drawer__status" id="bgStatus" role="status" aria-live="polite"></p>
-
-  <h3 class="drawer__subhead">Your backgrounds</h3>
-  <ul class="bg-grid" id="bgGrid" aria-label="Available backgrounds"></ul>
-</aside>
-
 <script id="dashboard-data" type="application/json"><%- JSON.stringify(chartData).replace(/</g, '\\u003c') %></script>
-<%- include('partials/foot', { scripts: ['https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js', '/js/dashboard.js', '/js/backgrounds.js'] }) %>
+<%- include('partials/foot', { scripts: ['https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js', '/js/dashboard.js'] }) %>

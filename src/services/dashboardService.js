@@ -175,14 +175,6 @@ async function getFinances(sellerId) {
   return row || {};
 }
 
-async function getPayouts(sellerId) {
-  const [rows] = await pool.query(
-    `SELECT city, country_label AS countryLabel, LOWER(country_code) AS countryCode, amount, status
-     FROM payouts WHERE seller_id = ? ORDER BY created_at DESC LIMIT 7`,
-    [sellerId]);
-  return rows;
-}
-
 async function getNotifications(sellerId) {
   const [[rows], [[unread]]] = await Promise.all([
     pool.query(
@@ -198,7 +190,7 @@ async function getDashboard(sellerId) {
   if (!seller) return null;
 
   const period = await resolvePeriod(sellerId);
-  const [totals, metrics, trend, orderStatus, revenue, inventory, customers, finances, payouts, notifications] =
+  const [totals, metrics, trend, orderStatus, revenue, inventory, customers, finances, notifications] =
     await Promise.all([
       getOrderTotals(sellerId, period),
       getDailyMetrics(sellerId, period),
@@ -208,7 +200,6 @@ async function getDashboard(sellerId) {
       getInventory(sellerId),
       getCustomers(sellerId, period),
       getFinances(sellerId),
-      getPayouts(sellerId),
       getNotifications(sellerId),
     ]);
 
@@ -240,7 +231,6 @@ async function getDashboard(sellerId) {
     },
     customers,
     finances,
-    payouts,
     notifications,
   };
 }

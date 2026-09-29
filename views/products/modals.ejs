@@ -1,0 +1,134 @@
+<%# Dialogs used by the Add New Product flow. Shared shell: .pf-modal > .pf-modal__dialog %>
+
+<%# Confirm / prompt dialog (PF.confirm, PF.prompt). Stacks above the other dialogs. %>
+<div class="pf-modal pf-modal--top" id="pf-dialog" role="alertdialog" aria-modal="true" aria-labelledby="pf-dialog-title" aria-describedby="pf-dialog-message" hidden>
+  <div class="pf-modal__dialog pf-modal__dialog--sm">
+    <header class="pf-modal__head pf-dialog__head">
+      <span class="pf-dialog__icon" data-dialog-icon aria-hidden="true"></span>
+      <div>
+        <h2 id="pf-dialog-title" data-dialog-title></h2>
+        <p id="pf-dialog-message" data-dialog-message></p>
+      </div>
+    </header>
+    <div class="pf-modal__body" data-dialog-field hidden>
+      <label class="pf-label" for="pf-dialog-input" data-dialog-label></label>
+      <div class="pf-control"><input class="pf-input" id="pf-dialog-input" data-dialog-input autocomplete="off"></div>
+      <p class="pf-error" data-dialog-error hidden></p>
+    </div>
+    <footer class="pf-modal__foot">
+      <button type="button" class="btn pf-btn-outline" data-dialog-cancel>Cancel</button>
+      <button type="button" class="btn btn--primary" data-dialog-ok>OK</button>
+    </footer>
+  </div>
+</div>
+
+<div class="pf-modal" id="pf-variations-modal" role="dialog" aria-modal="true" aria-labelledby="pf-variations-title" hidden>
+  <div class="pf-modal__dialog pf-modal__dialog--wide">
+    <header class="pf-modal__head">
+      <div>
+        <h2 id="pf-variations-title">Add Variations</h2>
+        <p>Select attributes, add values and generate variations.</p>
+      </div>
+      <button type="button" class="icon-btn" data-modal-close aria-label="Close"><i data-lucide="x"></i></button>
+    </header>
+    <div class="pf-modal__body">
+      <p class="pf-label">Attributes</p>
+      <div class="pf-attr-picks" data-attr-picks></div>
+      <div class="pf-attr-rows" data-attr-rows></div>
+      <div class="pf-attr-preview" data-attr-preview></div>
+      <p class="pf-section__error" data-variations-error role="alert" hidden></p>
+    </div>
+    <footer class="pf-modal__foot">
+      <button type="button" class="btn pf-btn-outline" data-modal-close>Cancel</button>
+      <button type="button" class="btn btn--primary" data-generate-variations><i data-lucide="sparkles"></i> Generate Variations</button>
+    </footer>
+  </div>
+</div>
+
+<div class="pf-modal" id="pf-library-modal" role="dialog" aria-modal="true" aria-labelledby="pf-library-title" hidden>
+  <div class="pf-modal__dialog pf-modal__dialog--wide">
+    <header class="pf-modal__head">
+      <div>
+        <h2 id="pf-library-title">Media Library</h2>
+        <p data-library-hint>Choose an image from your library.</p>
+      </div>
+      <button type="button" class="icon-btn" data-modal-close aria-label="Close"><i data-lucide="x"></i></button>
+    </header>
+    <div class="pf-modal__body">
+      <ul class="pf-library" data-library-grid></ul>
+    </div>
+    <footer class="pf-modal__foot">
+      <button type="button" class="btn pf-btn-outline" data-modal-close>Cancel</button>
+      <button type="button" class="btn btn--primary" data-library-use disabled>Use Selected</button>
+    </footer>
+  </div>
+</div>
+
+<div class="pf-modal" id="pf-bulk-modal" role="dialog" aria-modal="true" aria-labelledby="pf-bulk-title" hidden>
+  <div class="pf-modal__dialog">
+    <header class="pf-modal__head">
+      <div>
+        <h2 id="pf-bulk-title">Bulk Edit</h2>
+        <p data-bulk-hint>Leave a field empty to keep its current value.</p>
+      </div>
+      <button type="button" class="icon-btn" data-modal-close aria-label="Close"><i data-lucide="x"></i></button>
+    </header>
+    <div class="pf-modal__body pf-grid pf-grid--2">
+      <div class="pf-field"><label class="pf-label" for="bulk-qty">Available Quantity</label><div class="pf-control"><input class="pf-input" id="bulk-qty" data-bulk="qty" type="number" min="0" step="1" placeholder="Keep current"></div></div>
+      <div class="pf-field"><label class="pf-label" for="bulk-low">Low Stock Alert</label><div class="pf-control"><input class="pf-input" id="bulk-low" data-bulk="lowStock" type="number" min="0" step="1" placeholder="Keep current"></div></div>
+      <div class="pf-field"><label class="pf-label" for="bulk-backorder">Backorder</label><div class="pf-control">
+        <select class="pf-input pf-select" id="bulk-backorder" data-bulk="backorder"><option value="">Keep current</option><% options.backorderOptions.forEach((o) => { %><option value="<%= o.value %>"><%= o.label %></option><% }) %></select>
+      </div></div>
+      <div class="pf-field"><label class="pf-label" for="bulk-handling">Handling Time</label><div class="pf-control">
+        <select class="pf-input pf-select" id="bulk-handling" data-bulk="handlingTime"><option value="">Keep current</option><% options.handlingTimes.forEach((t) => { %><option><%= t %></option><% }) %></select>
+      </div></div>
+    </div>
+    <p class="pf-section__error pf-modal__error" data-bulk-error role="alert" hidden></p>
+    <footer class="pf-modal__foot">
+      <button type="button" class="btn pf-btn-outline" data-modal-close>Cancel</button>
+      <button type="button" class="btn btn--primary" data-bulk-apply>Apply to Selected</button>
+    </footer>
+  </div>
+</div>
+
+<div class="pf-modal" id="pf-inventory-modal" role="dialog" aria-modal="true" aria-labelledby="pf-inventory-title" hidden>
+  <div class="pf-modal__dialog">
+    <header class="pf-modal__head">
+      <div>
+        <h2 id="pf-inventory-title">Edit Inventory</h2>
+        <p data-inventory-hint></p>
+      </div>
+      <button type="button" class="icon-btn" data-modal-close aria-label="Close"><i data-lucide="x"></i></button>
+    </header>
+    <div class="pf-modal__body pf-grid pf-grid--2">
+      <div class="pf-field"><label class="pf-label" for="inv-qty">Available Quantity <span class="pf-req">*</span></label><div class="pf-control"><input class="pf-input" id="inv-qty" data-inv="qty" type="number" min="0" step="1"></div></div>
+      <div class="pf-field"><label class="pf-label" for="inv-low">Low Stock Alert</label><div class="pf-control"><input class="pf-input" id="inv-low" data-inv="lowStock" type="number" min="0" step="1"></div></div>
+      <div class="pf-field"><label class="pf-label" for="inv-backorder">Backorder</label><div class="pf-control">
+        <select class="pf-input pf-select" id="inv-backorder" data-inv="backorder"><% options.backorderOptions.forEach((o) => { %><option value="<%= o.value %>"><%= o.label %></option><% }) %></select>
+      </div></div>
+      <div class="pf-field"><label class="pf-label" for="inv-handling">Handling Time</label><div class="pf-control">
+        <select class="pf-input pf-select" id="inv-handling" data-inv="handlingTime"><% options.handlingTimes.forEach((t) => { %><option><%= t %></option><% }) %></select>
+      </div></div>
+      <div class="pf-field"><label class="pf-label" for="inv-status">Status</label><div class="pf-control">
+        <select class="pf-input pf-select" id="inv-status" data-inv="status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+      </div></div>
+    </div>
+    <footer class="pf-modal__foot">
+      <button type="button" class="btn pf-btn-outline" data-modal-close>Cancel</button>
+      <button type="button" class="btn btn--primary" data-inventory-save>Save</button>
+    </footer>
+  </div>
+</div>
+
+<div class="pf-modal" id="pf-preview-modal" role="dialog" aria-modal="true" aria-labelledby="pf-preview-title" hidden>
+  <div class="pf-modal__dialog pf-modal__dialog--wide">
+    <header class="pf-modal__head">
+      <div>
+        <h2 id="pf-preview-title">Product Preview</h2>
+        <p>How buyers will see your listing.</p>
+      </div>
+      <button type="button" class="icon-btn" data-modal-close aria-label="Close"><i data-lucide="x"></i></button>
+    </header>
+    <div class="pf-modal__body" data-preview-body></div>
+  </div>
+</div>

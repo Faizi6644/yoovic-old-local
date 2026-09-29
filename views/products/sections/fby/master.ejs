@@ -1,0 +1,28 @@
+<div class="pf-split pf-split--master">
+  <div class="pf-panel">
+    <div class="pf-grid pf-grid--3">
+      <%- include('../../components/choice', { label: 'Use Master Cartons?', name: 'fby.useMaster', tip: options.tips.useMaster, opts: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }], fcls: 'pf-field--flat' }) %>
+      <div data-master-only>
+        <%- include('../../components/field', { label: 'Number of Master Cartons', name: 'fby.masterCount', req: true, tip: options.tips.masterCount, itype: 'number', ph: '0', min: 1, step: 1 }) %>
+      </div>
+      <div data-master-only>
+        <%- include('../../components/field', { label: 'Boxes Per Master Carton', name: 'fby.boxesPerMaster', req: true, tip: options.tips.masterBoxes, itype: 'number', ph: '0', min: 1, step: 1 }) %>
+      </div>
+    </div>
+  </div>
+  <div class="pf-panel" data-master-only>
+    <h3 class="pf-panel__title">Master Carton Dimensions</h3>
+    <div class="pf-grid pf-grid--4">
+      <%- include('../../components/field', { label: 'Length', name: 'fby.mLength', itype: 'number', ph: '0', suffix: 'cm' }) %>
+      <%- include('../../components/field', { label: 'Width', name: 'fby.mWidth', req: true, itype: 'number', ph: '0', suffix: 'cm' }) %>
+      <%- include('../../components/field', { label: 'Height', name: 'fby.mHeight', req: true, itype: 'number', ph: '0', suffix: 'cm' }) %>
+      <%- include('../../components/field', { label: 'Weight', name: 'fby.mWeight', itype: 'number', ph: '0', suffix: 'kg' }) %>
+    </div>
+  </div>
+  <div class="pf-panel pf-side" data-master-only>
+    <h3 class="pf-panel__title">Master Carton Breakdown</h3>
+    <div class="pf-table-wrap">
+      <table class="pf-table pf-table--compact"><tbody data-master-breakdown></tbody></table>
+    </div>
+  </div>
+</div>

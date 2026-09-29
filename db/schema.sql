@@ -1,6 +1,7 @@
 -- Yoovic Seller Central schema (MySQL 5.7+ / MariaDB 10.3+)
 
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS product_listings;
 DROP TABLE IF EXISTS refund_requests;
 DROP TABLE IF EXISTS hero_backgrounds;
 DROP TABLE IF EXISTS notifications;
@@ -114,6 +115,21 @@ CREATE TABLE notifications (
   created_at  DATETIME     NOT NULL,
   KEY idx_notifications_seller_date (seller_id, created_at),
   CONSTRAINT fk_notifications_seller FOREIGN KEY (seller_id) REFERENCES sellers(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Product listings created with the Add New Product flow (also applied by db/migrate-product-listings.js)
+CREATE TABLE product_listings (
+  id                INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  seller_id         INT UNSIGNED NOT NULL,
+  status            ENUM('draft','submitted') NOT NULL DEFAULT 'draft',
+  fulfillment_type  ENUM('fbm','fby') NULL,
+  name_en           VARCHAR(255) NULL,
+  sku               VARCHAR(100) NULL,
+  data              LONGTEXT     NOT NULL COMMENT 'Full form state as JSON',
+  created_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_listings_seller_status (seller_id, status),
+  CONSTRAINT fk_listings_seller FOREIGN KEY (seller_id) REFERENCES sellers(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Refund requests raised against orders

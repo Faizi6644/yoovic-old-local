@@ -1,0 +1,18 @@
+<div class="pf-split pf-split--packing">
+  <div class="pf-panel">
+    <%- include('../../components/choice', { label: '', name: 'fby.variationPacking', stacked: true, opts: [{ value: 'one', label: 'One variation per box' }, { value: 'multiple', label: 'Multiple variations per box' }] }) %>
+  </div>
+  <div class="pf-panel">
+    <h3 class="pf-panel__title">Example Box Contents</h3>
+    <div class="pf-table-wrap">
+      <table class="pf-table pf-table--compact">
+        <thead><tr><th>Box</th><th>Variation</th><th>Quantity</th></tr></thead>
+        <tbody data-box-contents></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="pf-panel pf-side">
+    <h3 class="pf-panel__title">Packing Notes</h3>
+    <div class="pf-note pf-note--plain"><i data-lucide="square-pen"></i><span>This information will be used for box barcode generation on Page 3.</span></div>
+  </div>
+</div>

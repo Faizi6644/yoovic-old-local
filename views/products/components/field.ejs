@@ -1,0 +1,22 @@
+<%#
+  Text / number input. Params: page, label, name, req?, tip?, ph?, itype?, suffix?, rtl?, counter?, fcls?, readonly?, step?, min?, value?
+  `name` is the state path (e.g. "basic.nameEn"); inputs sharing a name on different pages stay in sync.
+%>
+<% const fid = page + '-' + name.replace(/\W+/g, '-'); %>
+<div class="pf-field <%= locals.fcls || '' %>">
+  <% if (label) { %><label class="pf-label" for="<%= fid %>"><%= label %><% if (locals.req) { %> <span class="pf-req">*</span><% } %><% if (locals.tip) { %> <%- include('tip', { tipText: tip }) %><% } %></label><% } %>
+  <div class="pf-control<%= locals.suffix || locals.counter ? ' has-addon' : '' %>">
+    <input class="pf-input" id="<%= fid %>" name="<%= name %>" type="<%= locals.itype || 'text' %>"
+      <% if (locals.ph) { %>placeholder="<%= ph %>"<% } %>
+      <% if (locals.req) { %>data-required<% } %>
+      <% if (locals.rtl) { %>dir="rtl" lang="ar"<% } %>
+      <% if (locals.counter) { %>maxlength="<%= counter %>" data-counter<% } %>
+      <% if (locals.itype === 'number') { %>inputmode="decimal" min="<%= locals.min !== undefined ? min : 0 %>" step="<%= locals.step || 'any' %>"<% } %>
+      <% if (locals.readonly) { %>readonly tabindex="-1"<% } %>
+      <% if (locals.value !== undefined) { %>value="<%= value %>"<% } %>
+      autocomplete="off">
+    <% if (locals.suffix) { %><span class="pf-addon"><%= suffix %></span><% } %>
+    <% if (locals.counter) { %><span class="pf-addon pf-counter" data-counter-for="<%= fid %>">0/<%= counter %></span><% } %>
+  </div>
+  <p class="pf-error" hidden></p>
+</div>

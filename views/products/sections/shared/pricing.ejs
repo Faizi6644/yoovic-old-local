@@ -1,0 +1,54 @@
+<%# Shared by Page 1 and the FBM page: same state paths, so values carry over. %>
+<div class="pf-split">
+  <div class="pf-panel">
+    <h3 class="pf-panel__title">Pricing</h3>
+    <div class="pf-grid pf-grid--3">
+      <%- include('../../components/field', { label: 'Market Price ($)', name: 'pricing.marketPrice', req: true, itype: 'number', ph: '0.00' }) %>
+      <%- include('../../components/field', { label: 'Unit Price ($)', name: 'pricing.unitPrice', req: true, itype: 'number', ph: '0.00' }) %>
+      <%- include('../../components/field', { label: 'Minimum Order Qty', name: 'pricing.minQty', req: true, itype: 'number', ph: '1', min: 1, step: 1 }) %>
+
+      <%- include('../../components/choice', { label: 'Discount Type', name: 'pricing.discountType', req: true, opts: [{ value: 'flat', label: 'Flat' }, { value: 'percent', label: 'Percent' }] }) %>
+      <%- include('../../components/field', { label: 'Discount Amount ($)', name: 'pricing.discountAmount', req: true, itype: 'number', ph: '0.00', fcls: 'pf-field--discount' }) %>
+      <%- include('../../components/field', { label: 'Tax Amount (%)', name: 'pricing.taxAmount', req: true, itype: 'number', ph: '0.00' }) %>
+    </div>
+    <div class="pf-grid pf-grid--tax">
+      <%- include('../../components/choice', { label: 'Tax Calculation', name: 'pricing.taxCalc', req: true, opts: [{ value: 'include', label: 'Include with product' }, { value: 'exclude', label: 'Exclude with product' }] }) %>
+      <%- include('../../components/choice', { label: 'Refundable', name: 'pricing.refundable', req: true, opts: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }] }) %>
+    </div>
+  </div>
+
+  <div class="pf-stack">
+    <div class="pf-panel">
+      <h3 class="pf-panel__title">Product Weight &amp; Dimensions</h3>
+      <div class="pf-grid pf-grid--2">
+        <%- include('../../components/field', { label: 'Weight (Ounce)', name: 'pricing.weight', req: true, itype: 'number', ph: '0.00' }) %>
+        <%- include('../../components/field', { label: 'Dimensions (L × H × W in cm)', name: 'pricing.dimensions', req: true, ph: 'e.g. 10 × 20 × 30' }) %>
+      </div>
+    </div>
+    <div class="pf-panel">
+      <h3 class="pf-panel__title">Shipping Configuration</h3>
+      <div class="pf-ship">
+        <div class="pf-ship__col">
+          <h4 class="pf-ship__title">Standard Shipping</h4>
+          <div class="pf-grid pf-grid--2">
+            <%- include('../../components/field', { label: 'Cost ($)', name: 'pricing.stdCost', req: true, itype: 'number', ph: '0.00' }) %>
+            <%- include('../../components/select', { label: 'Time', name: 'pricing.stdTime', req: true, ph: 'Days', opts: options.shippingTimes }) %>
+          </div>
+        </div>
+        <div class="pf-ship__col">
+          <h4 class="pf-ship__title">Express Shipping <%- include('../../components/tip', { tipText: options.tips.expressShipping }) %></h4>
+          <div class="pf-grid pf-grid--2">
+            <%- include('../../components/field', { label: 'Cost ($)', name: 'pricing.expCost', req: true, itype: 'number', ph: '0.00' }) %>
+            <%- include('../../components/select', { label: 'Time', name: 'pricing.expTime', req: true, ph: 'Days', opts: options.shippingTimes }) %>
+          </div>
+        </div>
+      </div>
+      <label class="pf-check">
+        <input type="checkbox" name="pricing.multiplyQty">
+        <span class="pf-check__box" aria-hidden="true"><i data-lucide="check"></i></span>
+        <span>Shipping cost multiply with quantity</span>
+        <%- include('../../components/tip', { tipText: options.tips.shippingMultiply }) %>
+      </label>
+    </div>
+  </div>
+</div>

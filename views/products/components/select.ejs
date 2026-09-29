@@ -1,0 +1,17 @@
+<%#
+  Dropdown. Params: page, label, name, req?, tip?, ph?, opts? (strings or { value, label }), fcls?
+  Leave opts empty for lists filled by script (e.g. dependent categories).
+%>
+<% const fid = page + '-' + name.replace(/\W+/g, '-'); const list = locals.opts || []; %>
+<div class="pf-field <%= locals.fcls || '' %>">
+  <% if (label) { %><label class="pf-label" for="<%= fid %>"><%= label %><% if (locals.req) { %> <span class="pf-req">*</span><% } %><% if (locals.tip) { %> <%- include('tip', { tipText: tip }) %><% } %></label><% } %>
+  <div class="pf-control">
+    <select class="pf-input pf-select" id="<%= fid %>" name="<%= name %>"<% if (locals.req) { %> data-required<% } %>>
+      <% if (locals.ph) { %><option value=""><%= ph %></option><% } %>
+      <% list.forEach((o) => { const v = typeof o === 'string' ? o : o.value; const l = typeof o === 'string' ? o : o.label; %>
+        <option value="<%= v %>"><%= l %></option>
+      <% }) %>
+    </select>
+  </div>
+  <p class="pf-error" hidden></p>
+</div>

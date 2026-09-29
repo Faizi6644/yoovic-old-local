@@ -1,0 +1,26 @@
+<%# Shared by Page 1 and the FBM page. Upload boxes are drawn by uploads.js from state. %>
+<div class="pf-media-grid">
+  <div class="pf-panel">
+    <%- include('../../components/upload', { label: 'Product Thumbnail', key: 'media.thumbnail', kind: 'single', req: true }) %>
+  </div>
+  <div class="pf-panel">
+    <%- include('../../components/upload', { label: 'Product Gallery Images', key: 'media.gallery', kind: 'gallery', req: true }) %>
+  </div>
+  <div class="pf-panel">
+    <span class="pf-label pf-upload-block__label">Product Video <span class="pf-optional">(Optional)</span></span>
+    <div class="pf-control pf-video-input has-addon">
+      <span class="pf-video-input__yt" aria-hidden="true"><i data-lucide="youtube"></i></span>
+      <input class="pf-input" name="media.videoUrl" type="url" id="<%= page %>-media-videoUrl" placeholder="Enter YouTube embed link" aria-label="YouTube embed link" autocomplete="off">
+      <span class="pf-addon" aria-hidden="true"><i data-lucide="link-2"></i></span>
+    </div>
+    <p class="pf-help">e.g. https://www.youtube.com/embed/tQw4w9WgXcQ</p>
+    <p class="pf-error" data-video-error hidden></p>
+    <div class="pf-video" data-video-preview></div>
+  </div>
+  <div class="pf-panel">
+    <h3 class="pf-panel__title pf-panel__title--seo">SEO Section</h3>
+    <%- include('../../components/field', { label: 'Meta Title', name: 'media.metaTitle', req: true, ph: 'Enter meta title', counter: 60 }) %>
+    <%- include('../../components/field', { label: 'Meta Description', name: 'media.metaDesc', req: true, ph: 'Enter meta description', counter: 160 }) %>
+    <%- include('../../components/upload', { label: 'Meta Image (Ratio 2:1)', key: 'media.metaImage', kind: 'seo' }) %>
+  </div>
+</div>

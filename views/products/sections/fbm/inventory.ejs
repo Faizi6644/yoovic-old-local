@@ -1,0 +1,29 @@
+<div class="pf-table-wrap">
+  <table class="pf-table pf-table--inventory">
+    <thead>
+      <tr>
+        <th class="pf-col-check"><label class="pf-check pf-check--bare"><input type="checkbox" data-check-all="inventory" aria-label="Select all variations"><span class="pf-check__box" aria-hidden="true"><i data-lucide="check"></i></span></label></th>
+        <th>Variation</th>
+        <th>SKU <span class="pf-req">*</span></th>
+        <th>YPIN</th>
+        <th>Available Quantity <span class="pf-req">*</span></th>
+        <th>Low Stock Alert <%- include('../../components/tip', { tipText: options.tips.lowStockAlert }) %></th>
+        <th>Backorder</th>
+        <th>Status</th>
+        <th>Handling Time</th>
+        <th class="pf-col-actions">Actions</th>
+      </tr>
+    </thead>
+    <tbody data-inventory-rows></tbody>
+  </table>
+</div>
+
+<div class="pf-infobar">
+  <span class="pf-infobar__icon"><i data-lucide="package-open"></i></span>
+  <div class="pf-infobar__text">
+    <strong>Inventory Tracking</strong>
+    <span>Enable tracking to automatically update stock when orders are placed. You can set low stock alerts and allow backorders if needed.</span>
+  </div>
+  <span class="pf-infobar__hint">Need to update multiple variations? Use <strong>Bulk Edit</strong></span>
+  <button type="button" class="btn btn--primary btn--sm" data-bulk-edit>Bulk Edit</button>
+</div>

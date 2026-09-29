@@ -1,0 +1,24 @@
+<div class="pf-split pf-split--dims">
+  <div class="pf-panel">
+    <%- include('../../components/toggle', { name: 'fby.sameDims', label: 'Same dimensions and weight for all boxes', tcls: 'pf-toggle--lead' }) %>
+    <div class="pf-grid pf-grid--4" data-same-dims>
+      <%- include('../../components/field', { label: 'Length', name: 'fby.length', req: true, itype: 'number', ph: '0', suffix: 'cm' }) %>
+      <%- include('../../components/field', { label: 'Width', name: 'fby.width', req: true, itype: 'number', ph: '0', suffix: 'cm' }) %>
+      <%- include('../../components/field', { label: 'Height', name: 'fby.height', req: true, itype: 'number', ph: '0', suffix: 'cm' }) %>
+      <%- include('../../components/field', { label: 'Weight', name: 'fby.weight', req: true, itype: 'number', ph: '0' }) %>
+
+      <%- include('../../components/choice', { label: 'Unit', name: 'fby.dimUnit', opts: [{ value: 'cm', label: 'cm' }, { value: 'inch', label: 'inch' }], fcls: 'pf-field--flat' }) %>
+      <%- include('../../components/choice', { label: 'Unit', name: 'fby.weightUnit', opts: [{ value: 'kg', label: 'kg' }, { value: 'lb', label: 'lb' }], fcls: 'pf-field--flat' }) %>
+      <div></div>
+      <div class="pf-field">
+        <label class="pf-label" for="fby-weight-unit">Weight Unit</label>
+        <div class="pf-control"><input class="pf-input" id="fby-weight-unit" data-weight-unit-display readonly tabindex="-1" value="kg"></div>
+      </div>
+    </div>
+    <div class="pf-per-box" data-per-box-dims hidden></div>
+  </div>
+  <div class="pf-panel pf-side">
+    <h3 class="pf-panel__title">Box Details Preview</h3>
+    <div class="pf-dims-preview" data-dims-preview></div>
+  </div>
+</div>

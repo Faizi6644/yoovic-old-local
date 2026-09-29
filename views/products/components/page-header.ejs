@@ -1,0 +1,15 @@
+<%# Params: crumbs [label...], heading, headingNote?, lead, right (partial) %>
+<header class="pf-header">
+  <div class="pf-header__main">
+    <nav class="pf-crumbs" aria-label="Breadcrumb">
+      <i data-lucide="house"></i>
+      <% crumbs.forEach((c, i) => { %>
+        <% if (i) { %><i data-lucide="chevron-right" class="pf-crumbs__sep"></i><% } %>
+        <% if (i === 0) { %><a href="/products/list"><%= c %></a><% } else { %><span<%- i === crumbs.length - 1 ? ' aria-current="page"' : '' %>><%= c %></span><% } %>
+      <% }) %>
+    </nav>
+    <h1 class="pf-title"><%= heading %><% if (locals.headingNote) { %> <span class="pf-title__note"><%= headingNote %></span><% } %></h1>
+    <p class="pf-lead"><%= lead %></p>
+  </div>
+  <div class="pf-header__right"><%- include(right) %></div>
+</header>

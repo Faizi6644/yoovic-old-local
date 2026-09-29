@@ -1,0 +1,16 @@
+<%#
+  Radio group drawn as bordered pills. Params: page, label, name, req?, tip?, opts [{ value, label }], fcls?, stacked?
+%>
+<% const gid = page + '-' + name.replace(/\W+/g, '-'); %>
+<div class="pf-field <%= locals.fcls || '' %>">
+  <% if (label) { %><span class="pf-label" id="<%= gid %>-label"><%= label %><% if (locals.req) { %> <span class="pf-req">*</span><% } %><% if (locals.tip) { %> <%- include('tip', { tipText: tip }) %><% } %></span><% } %>
+  <div class="pf-choices<%= locals.stacked ? ' pf-choices--stacked' : '' %>" role="radiogroup"<% if (label) { %> aria-labelledby="<%= gid %>-label"<% } %>>
+    <% opts.forEach((o) => { %>
+      <label class="pf-choice">
+        <input type="radio" name="<%= name %>" value="<%= o.value %>">
+        <span class="pf-radio" aria-hidden="true"></span>
+        <span><%= o.label %></span>
+      </label>
+    <% }) %>
+  </div>
+</div>

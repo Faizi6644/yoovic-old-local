@@ -1,0 +1,39 @@
+<div class="pf-filters">
+  <div class="pf-control pf-search">
+    <i data-lucide="search"></i>
+    <input class="pf-input" type="search" data-var-filter="q" placeholder="Search variations..." aria-label="Search variations">
+  </div>
+  <select class="pf-input pf-select" data-var-filter="Color" aria-label="Filter by color"><option value="">All Colors</option></select>
+  <select class="pf-input pf-select" data-var-filter="Size" aria-label="Filter by size"><option value="">All Sizes</option></select>
+  <select class="pf-input pf-select" data-var-filter="status" aria-label="Filter by status">
+    <option value="">All Status</option>
+    <option value="active">Active</option>
+    <option value="inactive">Inactive</option>
+  </select>
+</div>
+
+<div class="pf-table-wrap">
+  <table class="pf-table pf-table--variations">
+    <thead>
+      <tr>
+        <th class="pf-col-check"><label class="pf-check pf-check--bare"><input type="checkbox" data-check-all="variations" aria-label="Select all variations"><span class="pf-check__box" aria-hidden="true"><i data-lucide="check"></i></span></label></th>
+        <th>Image</th>
+        <th>Variation <span class="pf-req">*</span></th>
+        <th>SKU</th>
+        <th>YPIN</th>
+        <th><button type="button" class="pf-sort" data-sort="price">Price ($) <i data-lucide="arrow-up-down"></i></button></th>
+        <th>Stock</th>
+        <th>Status</th>
+        <th class="pf-col-actions">Actions</th>
+      </tr>
+    </thead>
+    <tbody data-variation-rows></tbody>
+  </table>
+</div>
+<div class="pf-empty pf-empty--inline" data-variations-none hidden>
+  <i data-lucide="boxes" class="pf-empty__icon"></i>
+  <p class="pf-empty__title">No variations added yet.</p>
+  <p class="pf-empty__text">Select attributes, add values and generate variations.</p>
+</div>
+
+<div class="pf-panel pf-var-details" data-variation-details hidden></div>

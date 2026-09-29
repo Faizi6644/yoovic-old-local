@@ -1,0 +1,45 @@
+<%#
+  Accordion section: only one is open at a time; later sections stay locked until this one is accepted.
+  Params: page, sid, num, heading, sub, optional?, note? (static blue text), countKey? (live count), tools? (partial),
+          body (partial), extras? [{ icon, heading, sub, body }]
+%>
+<% const extraCards = locals.extras || []; %>
+<section class="pf-section" data-section="<%= sid %>" data-page="<%= page %>" data-state="locked">
+  <div class="pf-card pf-section__card">
+    <header class="pf-section__head">
+      <button type="button" class="pf-section__toggle" data-section-toggle aria-expanded="false" aria-controls="<%= sid %>-body">
+        <span class="pf-num"><%= num %></span>
+        <span class="pf-section__titles">
+          <span class="pf-section__title"><%= heading %><% if (locals.optional) { %> <span class="pf-optional">(Optional)</span><% } %><% if (locals.note) { %> <span class="pf-count"><%= note %></span><% } %><% if (locals.countKey) { %> <span class="pf-count" data-count="<%= countKey %>"></span><% } %></span>
+          <span class="pf-section__sub"><%= sub %></span>
+          <span class="pf-section__summary" data-summary></span>
+        </span>
+        <span class="pf-section__state" aria-hidden="true">
+          <i data-lucide="lock" class="pf-state-locked"></i>
+          <i data-lucide="check" class="pf-state-done"></i>
+          <i data-lucide="chevron-down" class="pf-state-closed"></i>
+        </span>
+      </button>
+      <% if (locals.tools) { %><div class="pf-section__tools"><%- include(tools) %></div><% } %>
+    </header>
+    <div class="pf-section__body" id="<%= sid %>-body">
+      <%- include(body) %>
+      <% if (!extraCards.length) { %><%- include('section-actions') %><% } %>
+    </div>
+  </div>
+  <% extraCards.forEach((card, i) => { %>
+    <div class="pf-card pf-section__extra">
+      <header class="pf-extra__head">
+        <span class="pf-extra__icon"><i data-lucide="<%= card.icon %>"></i></span>
+        <span class="pf-section__titles">
+          <span class="pf-section__title"><%= card.heading %></span>
+          <span class="pf-section__sub"><%= card.sub %></span>
+        </span>
+      </header>
+      <div class="pf-section__body">
+        <%- include(card.body) %>
+        <% if (i === extraCards.length - 1) { %><%- include('section-actions') %><% } %>
+      </div>
+    </div>
+  <% }) %>
+</section>

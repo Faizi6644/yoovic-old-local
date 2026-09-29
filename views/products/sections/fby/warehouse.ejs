@@ -1,0 +1,12 @@
+<div class="pf-split pf-split--warehouse">
+  <div class="pf-panel">
+    <%- include('../../components/select', { label: 'Select Warehouse', name: 'fby.warehouse', req: true, tip: options.tips.warehouse, ph: 'Select Warehouse', opts: options.warehouses.map((w) => ({ value: w.id, label: w.name })) }) %>
+  </div>
+  <div class="pf-panel">
+    <h3 class="pf-panel__title pf-panel__title--sm"><i data-lucide="building-2"></i> Warehouse Details</h3>
+    <div class="pf-warehouse" data-warehouse-details></div>
+  </div>
+  <div class="pf-warehouse-photo" aria-hidden="true">
+    <img src="/images/mock/warehouse-placeholder.svg" alt="" width="640" height="200">
+  </div>
+</div>

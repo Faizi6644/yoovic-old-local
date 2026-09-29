@@ -1,10 +1,9 @@
 const express = require('express');
-const pool = require('../config/db');
 const navigation = require('../config/navigation');
 const { SELLER_ID } = require('../config/seller');
 const { getDashboard } = require('../services/dashboardService');
-const { getActiveBackground } = require('../services/backgroundService');
 const { getNavBadges } = require('../services/navigationService');
+const { getLayoutData } = require('../services/layoutService');
 
 const router = express.Router();
 
@@ -21,8 +20,6 @@ const QUICK_ACTIONS = [
   { label: 'Download Reports', icon: 'download', tone: 'sky', href: '/reports' },
 ];
 
-router.use('/api/backgrounds', require('./backgrounds'));
-
 // Sidebar count badges for every page below
 router.use(async (req, res, next) => {
   try {
@@ -35,11 +32,14 @@ router.use(async (req, res, next) => {
 
 router.get('/', (req, res) => res.redirect('/dashboard'));
 
+// Add New Product flow (page + draft API); registered before the placeholders so it owns /products/add
+router.use(require('./products'));
+
 router.get('/dashboard', async (req, res, next) => {
   try {
-    const [data, heroBackground] = await Promise.all([getDashboard(SELLER_ID), getActiveBackground(SELLER_ID)]);
+    const data = await getDashboard(SELLER_ID);
     if (!data) return next(Object.assign(new Error(`Seller #${SELLER_ID} not found. Run "npm run db:setup".`), { status: 404 }));
-    res.render('dashboard', { ...data, heroBackground, active: 'dashboard', quickActions: QUICK_ACTIONS });
+    res.render('dashboard', { ...data, active: 'dashboard', quickActions: QUICK_ACTIONS });
   } catch (err) {
     next(err);
   }
@@ -58,9 +58,7 @@ const sections = navigation
 sections.forEach((item) => {
   router.get(`/${item.slug}`, async (req, res, next) => {
     try {
-      const [[seller]] = await pool.query('SELECT * FROM sellers WHERE id = ?', [SELLER_ID]);
-      const [[unread]] = await pool.query('SELECT COUNT(*) AS count FROM notifications WHERE seller_id = ? AND is_read = 0', [SELLER_ID]);
-      res.render('placeholder', { seller, item, active: item.slug, notifications: { unread: Number(unread.count) } });
+      res.render('placeholder', { ...(await getLayoutData(SELLER_ID)), item, active: item.slug });
     } catch (err) {
       next(err);
     }

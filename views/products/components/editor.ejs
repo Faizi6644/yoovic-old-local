@@ -1,0 +1,25 @@
+<%#
+  Lightweight rich-text editor (contenteditable). Params: page, label, name, req?, ph?, rtl?
+  The HTML is kept in state at `name`; script.js sanitizes it on load and paste.
+%>
+<% const fid = page + '-' + name.replace(/\W+/g, '-'); %>
+<div class="pf-field">
+  <span class="pf-label" id="<%= fid %>-label"><%= label %><% if (locals.req) { %> <span class="pf-req">*</span><% } %></span>
+  <div class="pf-editor" data-editor="<%= name %>"<% if (locals.req) { %> data-required<% } %><% if (locals.rtl) { %> dir="rtl"<% } %>>
+    <div class="pf-editor__toolbar" role="toolbar" aria-label="<%= label %> formatting">
+      <% [
+        ['bold', 'bold', 'Bold'], ['italic', 'italic', 'Italic'], ['underline', 'underline', 'Underline'],
+        ['strikeThrough', 'strikethrough', 'Strikethrough'], ['h1', 'heading-1', 'Heading 1'], ['h2', 'heading-2', 'Heading 2'],
+        ['insertUnorderedList', 'list', 'Bulleted list'], ['outdent', 'indent-decrease', 'Decrease indent'],
+        ['insertOrderedList', 'list-ordered', 'Numbered list'], ['createLink', 'link', 'Insert link'],
+        ['justifyLeft', 'align-left', 'Align'], ['removeFormat', 'remove-formatting', 'Clear formatting'],
+        ['code', 'code', 'Code'],
+      ].forEach(([cmd, icon, title]) => { %>
+        <button type="button" class="pf-editor__btn" data-cmd="<%= cmd %>" title="<%= title %>" aria-label="<%= title %>"><i data-lucide="<%= icon %>"></i></button>
+      <% }) %>
+    </div>
+    <div class="pf-editor__area" id="<%= fid %>" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="<%= fid %>-label"
+      data-placeholder="<%= locals.ph || '' %>"<% if (locals.rtl) { %> dir="rtl" lang="ar"<% } %>></div>
+  </div>
+  <p class="pf-error" hidden></p>
+</div>

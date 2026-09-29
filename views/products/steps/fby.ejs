@@ -1,0 +1,34 @@
+<div class="pf-step" data-step="fby" hidden>
+  <form class="pf-page" data-form="fby" novalidate>
+    <%- include('../components/page-header', {
+      crumbs: ['Products', 'Add New Product', 'FBY Configuration (Page 2 of 3)'],
+      heading: 'Add New Product (FBY)',
+      headingNote: '- Warehouse Fulfilled',
+      lead: 'Send your inventory to our warehouse and let us handle storage and fulfillment.',
+      right: '../partials/fby-header-right',
+    }) %>
+
+    <% [
+      { sid: 'y-type', heading: 'Fulfillment Type', sub: 'Choose how you want to fulfill and manage your inventory for this product.', body: 'type' },
+      { sid: 'y-inventory', heading: 'Product & Variation Inventory', sub: 'Select the variations you want to send to the warehouse and specify the quantity.', body: 'inventory' },
+      { sid: 'y-boxes', heading: 'Box Configuration', sub: 'Configure how the inventory will be packed in boxes.', body: 'boxes' },
+      { sid: 'y-packing', heading: 'Variation Packing', sub: 'Define how different variations will be packed in boxes.', body: 'packing' },
+      { sid: 'y-dims', heading: 'Box Details', sub: 'Enter the dimensions and weight of your shipment boxes.', body: 'dims' },
+      { sid: 'y-packaging', heading: 'Packaging Details', sub: 'Select the type of packaging and additional details.', body: 'packaging' },
+      { sid: 'y-master', heading: 'Master Carton', sub: 'Configure master carton details if applicable.', body: 'master' },
+      { sid: 'y-warehouse', heading: 'Warehouse', sub: 'Select the warehouse where you will send your inventory.', body: 'warehouse' },
+      { sid: 'y-arrival', heading: 'Expected Warehouse Arrival', sub: 'Provide the expected date (and time if available) when your shipment will arrive.', body: 'arrival' },
+      { sid: 'y-summary', heading: 'Shipment Summary & Validation', sub: 'Review your shipment details before continuing to the next page.', body: 'summary' },
+    ].forEach((s, i) => { %>
+      <%- include('../components/section', { page: 'fby', sid: s.sid, num: i + 1, heading: s.heading, sub: s.sub, body: '../sections/fby/' + s.body }) %>
+    <% }) %>
+
+    <div class="pf-card pf-bottom">
+      <button type="button" class="btn pf-btn-outline" data-save-draft><i data-lucide="save"></i> Save Draft</button>
+      <div class="pf-bottom__right">
+        <button type="button" class="btn pf-btn-outline" data-go="basic"><i data-lucide="arrow-left"></i> Back</button>
+        <button type="button" class="btn btn--primary pf-btn-next" data-go="page3" data-final="fby" disabled>Continue to Page 3 <i data-lucide="arrow-right"></i></button>
+      </div>
+    </div>
+  </form>
+</div>

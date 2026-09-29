@@ -1,0 +1,32 @@
+<%- include('../partials/head', { title: 'Add New Product', styles: ['/css/product-form.css'] }) %>
+<%- include('../partials/sidebar') %>
+
+<main class="main pf-main">
+  <%- include('../partials/topbar') %>
+
+  <% if (draftMissing) { %>
+    <p class="pf-banner" role="alert"><i data-lucide="triangle-alert"></i> That draft could not be found, so a new product was started.</p>
+  <% } %>
+
+  <%- include('steps/basic') %>
+  <%- include('steps/fbm') %>
+  <%- include('steps/fby') %>
+  <%- include('steps/page3') %>
+</main>
+
+<%- include('modals') %>
+<div class="pf-toasts" aria-live="polite" aria-atomic="true"></div>
+
+<script id="pf-options" type="application/json"><%- JSON.stringify(options).replace(/</g, '\\u003c') %></script>
+<script id="pf-draft" type="application/json"><%- JSON.stringify(draft).replace(/</g, '\\u003c') %></script>
+<%- include('../partials/foot', { scripts: [
+  '/js/product-form/core.js',
+  '/js/product-form/api.js',
+  '/js/product-form/sections.js',
+  '/js/product-form/editor.js',
+  '/js/product-form/uploads.js',
+  '/js/product-form/variations.js',
+  '/js/product-form/fbm.js',
+  '/js/product-form/fby.js',
+  '/js/product-form/main.js',
+] }) %>

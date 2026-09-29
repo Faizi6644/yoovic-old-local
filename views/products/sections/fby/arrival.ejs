@@ -1,0 +1,7 @@
+<div class="pf-panel">
+  <div class="pf-grid pf-grid--arrival">
+    <%- include('../../components/field', { label: 'Tracking Number (Optional)', name: 'fby.tracking', ph: 'Enter carrier tracking number' }) %>
+    <%- include('../../components/field', { label: 'Expected Arrival Date', name: 'fby.arrivalDate', req: true, itype: 'date', tip: options.tips.arrival }) %>
+    <%- include('../../components/select', { label: 'Arrival Time / Window (Optional)', name: 'fby.arrivalWindow', ph: 'Select time window', opts: options.arrivalWindows }) %>
+  </div>
+</div>

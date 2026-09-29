@@ -1,0 +1,30 @@
+<div class="pf-split pf-split--wide">
+  <div class="pf-stack">
+    <div class="pf-panel">
+      <div class="pf-product-summary pf-product-summary--compact" data-product-summary="fby"></div>
+    </div>
+    <div class="pf-panel">
+      <h3 class="pf-panel__title pf-panel__title--sm"><i data-lucide="list-checks"></i> Select Variations to Send <%- include('../../components/tip', { tipText: options.tips.fbySelect }) %></h3>
+      <div class="pf-table-wrap">
+        <table class="pf-table pf-table--fby">
+          <thead>
+            <tr>
+              <th class="pf-col-check">Select</th>
+              <th>Variation</th>
+              <th>SKU</th>
+              <th>Current Inventory</th>
+              <th>Quantity to Send <span class="pf-req">*</span></th>
+            </tr>
+          </thead>
+          <tbody data-fby-rows></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pf-panel pf-side">
+    <h3 class="pf-panel__title"><i data-lucide="clipboard-list"></i> Variation Summary</h3>
+    <p class="pf-side__meta">Selected Variations: <strong data-fby-selected-count>0 / 0</strong> <%- include('../../components/tip', { tipText: options.tips.selectedVariations }) %></p>
+    <ul class="pf-var-summary" data-fby-var-summary></ul>
+    <div class="pf-note"><i data-lucide="info"></i><span>The selected quantities will be sent to the warehouse and tracked separately for each variation.</span></div>
+  </div>
+</div>

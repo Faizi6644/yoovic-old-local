@@ -1,0 +1,16 @@
+<div class="pf-grid pf-grid--4">
+  <%- include('../../components/select', { label: 'Category', name: 'basic.category', req: true, ph: 'Select Category', opts: options.categories.map((c) => ({ value: c.id, label: c.name })) }) %>
+  <%- include('../../components/select', { label: 'Sub Category', name: 'basic.subCategory', req: true, ph: 'Select Sub Category' }) %>
+  <%- include('../../components/select', { label: 'Sub Sub Category', name: 'basic.subSubCategory', req: true, ph: 'Select Sub Sub Category' }) %>
+  <%- include('../../components/select', { label: 'Brand', name: 'basic.brand', req: true, tip: options.tips.brand, ph: 'Select Brand', opts: options.brands.map((b) => ({ value: b.id, label: b.name })), fcls: 'pf-field--tip-end' }) %>
+
+  <%- include('../../components/choice', { label: 'Product Type', name: 'basic.productType', req: true, opts: [{ value: 'physical', label: 'Physical' }, { value: 'digital', label: 'Digital' }] }) %>
+  <%- include('../../components/field', { label: 'Seller SKU', name: 'basic.sku', req: true, tip: options.tips.sellerSku, ph: 'Enter product SKU' }) %>
+  <%- include('../../components/select', { label: 'Unit', name: 'basic.unit', req: true, ph: 'Select Unit', opts: options.units }) %>
+  <div class="pf-field">
+    <label class="pf-label" for="basic-tags-input">Search tags</label>
+    <div class="pf-tags" data-tags="basic.tags">
+      <input class="pf-tags__input" id="basic-tags-input" placeholder="Add tags (e.g. shampoo, organic, hair care...)" autocomplete="off">
+    </div>
+  </div>
+</div>

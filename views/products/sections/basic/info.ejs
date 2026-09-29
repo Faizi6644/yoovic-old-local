@@ -1,0 +1,17 @@
+<div class="pf-panel">
+  <div class="pf-lang-tabs" role="tablist" aria-label="Language">
+    <button type="button" class="pf-lang-tab is-active" role="tab" aria-selected="true" data-lang-tab="en"><i data-lucide="flag"></i> English (EN)</button>
+    <button type="button" class="pf-lang-tab" role="tab" aria-selected="false" data-lang-tab="ae"><i data-lucide="languages"></i> Arabic (AE)</button>
+  </div>
+
+  <div class="pf-lang-grid" data-lang-grid data-active-lang="en">
+    <div data-lang="en"><%- include('../../components/field', { label: 'Product Name (EN)', name: 'basic.nameEn', req: true, ph: 'Enter product name in English' }) %></div>
+    <div data-lang="ae"><%- include('../../components/field', { label: 'Product Name (AE)', name: 'basic.nameAe', req: true, ph: 'أدخل اسم المنتج بالعربية', rtl: true }) %></div>
+
+    <div data-lang="en"><%- include('../../components/editor', { label: 'Description (EN)', name: 'basic.descEn', req: true, ph: 'Enter detailed product description in English...' }) %></div>
+    <div data-lang="ae"><%- include('../../components/editor', { label: 'Description (AE)', name: 'basic.descAe', req: true, ph: 'أدخل الوصف التفصيلي للمنتج بالعربية', rtl: true }) %></div>
+
+    <div data-lang="en"><%- include('../../components/field', { label: 'Short Description (EN)', name: 'basic.shortEn', req: true, ph: 'Enter short description in English...' }) %></div>
+    <div data-lang="ae"><%- include('../../components/field', { label: 'Short Description (AE)', name: 'basic.shortAe', req: true, ph: 'أدخل الوصف المختصر بالعربية', rtl: true }) %></div>
+  </div>
+</div>

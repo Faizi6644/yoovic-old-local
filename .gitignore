@@ -3,3 +3,5 @@ node_modules/
 npm-debug.log*
 public/uploads/backgrounds/*
 !public/uploads/backgrounds/.gitkeep
+public/uploads/products/*
+!public/uploads/products/.gitkeep

@@ -1,0 +1,25 @@
+<div class="pf-summary-grid">
+  <div class="pf-panel">
+    <h3 class="pf-panel__title pf-panel__title--sm">Overall Shipment</h3>
+    <dl class="pf-kv" data-ship-overall></dl>
+  </div>
+  <div class="pf-panel">
+    <h3 class="pf-panel__title pf-panel__title--sm">Variation Breakdown <%- include('../../components/tip', { tipText: options.tips.variationBreakdown }) %></h3>
+    <div class="pf-table-wrap">
+      <table class="pf-table pf-table--compact">
+        <thead><tr><th>Variation</th><th>Boxes</th><th>Quantity</th></tr></thead>
+        <tbody data-ship-breakdown></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="pf-panel">
+    <h3 class="pf-panel__title pf-panel__title--sm">Packing Summary</h3>
+    <dl class="pf-kv" data-ship-packing></dl>
+  </div>
+  <div class="pf-panel pf-validation" data-validation>
+    <div class="pf-validation__status" data-validation-status></div>
+    <button type="button" class="btn pf-btn-outline btn--sm pf-validation__run" data-run-validation><i data-lucide="shield-check"></i> Run Validation</button>
+    <button type="button" class="pf-validation__details" data-validation-toggle aria-expanded="false"><i data-lucide="list-checks"></i> View Details <i data-lucide="chevron-down"></i></button>
+    <ul class="pf-validation__list" data-validation-list hidden></ul>
+  </div>
+</div>
