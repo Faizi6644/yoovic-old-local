@@ -1,0 +1,42 @@
+<div class="pf-step" data-step="fby3" hidden>
+  <form class="pf-page" data-form="fby3" novalidate>
+    <header class="pf-header">
+      <div class="pf-header__main">
+        <nav class="pf-crumbs" aria-label="Breadcrumb">
+          <i data-lucide="house"></i>
+          <a href="/products/list">Products</a>
+          <i data-lucide="chevron-right" class="pf-crumbs__sep"></i><span>Add New Product</span>
+          <i data-lucide="chevron-right" class="pf-crumbs__sep"></i><span>FBY Configuration</span>
+          <i data-lucide="chevron-right" class="pf-crumbs__sep"></i><span aria-current="page">Page 3 of 3</span>
+        </nav>
+        <h1 class="pf-title">FBY — Warehouse Fulfilled</h1>
+        <p class="pf-lead pf-lead--accent">Page 3 — Barcodes, Handling &amp; Shipping</p>
+      </div>
+    </header>
+
+    <%# The Master Carton section is hidden (and the rest renumbered) when Page 2 does not use master cartons %>
+    <% [
+      { sid: 'z-handling', heading: 'Product Handling Category', note: '* (Mandatory)', sub: 'Select the appropriate handling category for your product. Apply selected category to all variations.', body: 'handling' },
+      { sid: 'z-var', heading: 'Unique Product / Variation Barcodes', sub: 'Every variation must have its own unique barcode.', body: 'var-barcodes', tools: 'var-tools' },
+      { sid: 'z-box', heading: 'Unique Box Barcodes', sub: 'Every physical box must have its own unique barcode.', body: 'box-barcodes', tools: 'box-tools' },
+      { sid: 'z-master', heading: 'Master Carton Barcodes', sub: 'Every physical box carton, each master carton must have a unique barcode.', body: 'master-barcodes', tools: 'master-tools' },
+      { sid: 'z-summary', heading: 'Barcode Summary', sub: 'Every barcode for this shipment, ready to preview, download and print.', body: 'barcode-summary', tools: 'summary-tools' },
+      { sid: 'z-shipping', heading: 'Shipping Method', sub: 'Choose how your boxes will travel to the warehouse.', body: 'shipping' },
+      { sid: 'z-labels', heading: 'Shipping Label Generation', sub: 'Generate a shipping label for every box.', body: 'labels' },
+      { sid: 'z-review', heading: 'Final Review', sub: 'Check everything before submitting your FBY shipment.', body: 'review' },
+    ].forEach((s, i) => { %>
+      <%- include('../components/section', {
+        page: 'fby3', sid: s.sid, num: i + 1, heading: s.heading, sub: s.sub, note: s.note,
+        tools: s.tools ? '../sections/fby3/' + s.tools : null, body: '../sections/fby3/' + s.body,
+      }) %>
+    <% }) %>
+
+    <div class="pf-card pf-bottom">
+      <button type="button" class="btn pf-btn-outline" data-save-draft><i data-lucide="save"></i> Save Draft</button>
+      <div class="pf-bottom__right">
+        <button type="button" class="btn pf-btn-outline" data-go="fby"><i data-lucide="arrow-left"></i> Back</button>
+        <button type="button" class="btn btn--primary pf-btn-submit" data-submit-fby data-final="fby3" disabled><i data-lucide="send"></i> Submit FBY Shipment</button>
+      </div>
+    </div>
+  </form>
+</div>

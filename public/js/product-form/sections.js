@@ -8,7 +8,8 @@
   PF.summaries = {};    // sectionId -> () => string          (one-line summary when collapsed)
   const openByPage = {};  // page -> Set of open section ids (several can be open, like an accordion)
 
-  const sectionsOf = (page) => PF.$$(`.pf-section[data-page="${page}"]`);
+  // Sections switched off for this product (e.g. Master Carton Barcodes without master cartons) are skipped
+  const sectionsOf = (page) => PF.$$(`.pf-section[data-page="${page}"]:not([hidden])`);
   const progressOf = (page) => (PF.state.progress[page] = PF.state.progress[page] || {});
 
   function statusOf(page, id, index) {
@@ -76,7 +77,10 @@
   PF.renderSections = (page) => {
     const list = sectionsOf(page);
     if (!list.length) return;
-    list.forEach((s, i) => { s.dataset.state = statusOf(page, s.dataset.section, i); });
+    list.forEach((s, i) => {
+      s.dataset.state = statusOf(page, s.dataset.section, i);
+      s.querySelector('.pf-num').textContent = i + 1; // numbering follows the visible sections
+    });
     const open = openSet(page);
     list.forEach((s) => {
       const isOpen = open.has(s.dataset.section) && s.dataset.state !== 'locked';
@@ -171,7 +175,7 @@
 
   // Accepted sections that become invalid (e.g. a new variation without stock) drop back to pending
   PF.recheckAccepted = PF.debounce(() => {
-    ['basic', 'fbm', 'fby'].forEach((page) => {
+    ['basic', 'fbm', 'fby', 'fby3'].forEach((page) => {
       let changed = false;
       sectionsOf(page).forEach((s) => {
         if (progressOf(page)[s.dataset.section] === 'accepted' && PF.validateSection(s, true).length) {
@@ -207,6 +211,6 @@
     document.addEventListener('input', onEdit, true);
     document.addEventListener('change', onEdit, true);
     PF.on('change', () => PF.recheckAccepted());
-    ['basic', 'fbm', 'fby'].forEach((p) => PF.renderSections(p));
+    ['basic', 'fbm', 'fby', 'fby3'].forEach((p) => PF.renderSections(p));
   };
 })();

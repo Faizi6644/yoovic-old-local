@@ -1,4 +1,4 @@
-<%- include('../partials/head', { title: 'Add New Product', styles: ['/css/product-form.css'] }) %>
+<%- include('../partials/head', { title: 'Add New Product', styles: ['/css/product-form.css', '/css/product-form-fby3.css'] }) %>
 <%- include('../partials/sidebar') %>
 
 <main class="main pf-main">
@@ -11,12 +11,15 @@
   <%- include('steps/basic') %>
   <%- include('steps/fbm') %>
   <%- include('steps/fby') %>
+  <%- include('steps/fby3') %>
+  <%- include('steps/fby-done') %>
   <%- include('steps/page3') %>
 </main>
 
 <%- include('modals') %>
 <div class="pf-toasts" aria-live="polite" aria-atomic="true"></div>
 
+<script>window.PF_SELLER = <%- JSON.stringify({ store: seller.store_name, country: seller.country_name }).replace(/</g, '\\u003c') %>;</script>
 <script id="pf-options" type="application/json"><%- JSON.stringify(options).replace(/</g, '\\u003c') %></script>
 <script id="pf-draft" type="application/json"><%- JSON.stringify(draft).replace(/</g, '\\u003c') %></script>
 <%- include('../partials/foot', { scripts: [
@@ -28,5 +31,8 @@
   '/js/product-form/variations.js',
   '/js/product-form/fbm.js',
   '/js/product-form/fby.js',
+  'https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js',
+  '/js/product-form/barcodes.js',
+  '/js/product-form/fby3.js',
   '/js/product-form/main.js',
 ] }) %>

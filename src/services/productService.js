@@ -50,4 +50,77 @@ async function saveMedia(buffer, mimeType) {
   return MEDIA_URL + name;
 }
 
-module.exports = { getFormOptions, getListing, saveDraft, saveMedia, IMAGE_TYPES };
+// ---- FBY Page 3: barcodes and shipment submission ----------------------------------
+
+const BARCODE_BASE = 884500000000; // 12-digit numbers: base + row id, unique across all shipments
+const KINDS = ['variation', 'box', 'master'];
+const MAX_PER_KIND = 500;
+
+// Allocates new barcode numbers for a draft. counts: { variation, box, master } -> { variation: [codes], ... }
+async function allocateBarcodes(sellerId, listingId, counts) {
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [[listing]] = await conn.query(
+      "SELECT id FROM product_listings WHERE id = ? AND seller_id = ? AND status = 'draft' FOR UPDATE", [listingId, sellerId]);
+    if (!listing) { await conn.rollback(); return null; }
+    const out = {};
+    for (const kind of KINDS) {
+      const n = Math.max(0, Math.min(MAX_PER_KIND, parseInt(counts[kind], 10) || 0));
+      out[kind] = [];
+      for (let i = 0; i < n; i += 1) {
+        const [res] = await conn.query('INSERT INTO barcodes (seller_id, listing_id, kind) VALUES (?, ?, ?)', [sellerId, listingId, kind]);
+        const code = String(BARCODE_BASE + res.insertId);
+        await conn.query('UPDATE barcodes SET code = ? WHERE id = ?', [code, res.insertId]);
+        out[kind].push(code);
+      }
+    }
+    await conn.commit();
+    return out;
+  } catch (err) {
+    await conn.rollback();
+    throw err;
+  } finally {
+    conn.release();
+  }
+}
+
+// Saves the final draft data, creates the shipment and marks the listing submitted. Returns the shipment code.
+async function submitFbyShipment(sellerId, listingId, data, summary) {
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [[listing]] = await conn.query(
+      "SELECT id FROM product_listings WHERE id = ? AND seller_id = ? AND status = 'draft' FOR UPDATE", [listingId, sellerId]);
+    if (!listing) { await conn.rollback(); return null; }
+    const [res] = await conn.query(
+      `INSERT INTO fby_shipments (seller_id, listing_id, warehouse_id, total_units, total_boxes, shipping_method, carrier, data)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [sellerId, listingId, summary.warehouse, summary.totalUnits, summary.totalBoxes, summary.method, summary.carrier, JSON.stringify(summary)]);
+    const code = `SHP-${new Date().getFullYear()}-${String(res.insertId).padStart(5, '0')}`;
+    await conn.query('UPDATE fby_shipments SET shipment_code = ? WHERE id = ?', [code, res.insertId]);
+    data.shipment = { code, submittedAt: new Date().toISOString() };
+    await conn.query(
+      `UPDATE product_listings SET status = 'submitted', fulfillment_type = 'fby', name_en = ?, sku = ?, data = ? WHERE id = ?`,
+      [String(data.basic?.nameEn || '').slice(0, 255) || null, String(data.basic?.sku || '').slice(0, 100) || null, JSON.stringify(data), listingId]);
+    await conn.commit();
+    return code;
+  } catch (err) {
+    await conn.rollback();
+    throw err;
+  } finally {
+    conn.release();
+  }
+}
+
+async function getShipmentForListing(sellerId, listingId) {
+  const [[row]] = await pool.query(
+    `SELECT shipment_code AS code, status, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i') AS submittedAt
+     FROM fby_shipments WHERE seller_id = ? AND listing_id = ? ORDER BY id DESC LIMIT 1`, [sellerId, listingId]);
+  return row || null;
+}
+
+module.exports = {
+  getFormOptions, getListing, saveDraft, saveMedia, IMAGE_TYPES,
+  allocateBarcodes, submitFbyShipment, getShipmentForListing,
+};

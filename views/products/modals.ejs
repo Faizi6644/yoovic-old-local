@@ -120,6 +120,23 @@
   </div>
 </div>
 
+<div class="pf-modal" id="pf-barcode-modal" role="dialog" aria-modal="true" aria-labelledby="pf-barcode-title" hidden>
+  <div class="pf-modal__dialog pf-modal__dialog--wide">
+    <header class="pf-modal__head">
+      <div>
+        <h2 id="pf-barcode-title" data-barcode-title>Barcode Preview</h2>
+        <p data-barcode-hint>Code 128 · scannable</p>
+      </div>
+      <button type="button" class="icon-btn" data-modal-close aria-label="Close"><i data-lucide="x"></i></button>
+    </header>
+    <div class="pf-modal__body" data-barcode-body></div>
+    <footer class="pf-modal__foot">
+      <button type="button" class="btn pf-btn-outline" data-modal-close>Close</button>
+      <button type="button" class="btn btn--primary" data-barcode-modal-print><i data-lucide="printer"></i> Print</button>
+    </footer>
+  </div>
+</div>
+
 <div class="pf-modal" id="pf-preview-modal" role="dialog" aria-modal="true" aria-labelledby="pf-preview-title" hidden>
   <div class="pf-modal__dialog pf-modal__dialog--wide">
     <header class="pf-modal__head">

@@ -124,6 +124,36 @@ const mediaLibrary = [
   { id: 'lib-6', url: '/images/mock/perfume-banner.svg', name: 'Perfume – Banner (2:1)' },
 ];
 
+// FBY Page 3: handling categories (icon = Lucide name, tone = icon colour)
+const handlingCategories = [
+  { id: 'standard', label: 'Standard / General Product', icon: 'package', tone: 'blue' },
+  { id: 'fragile', label: 'Fragile / Glass', icon: 'wine', tone: 'blue' },
+  { id: 'liquid', label: 'Liquid', icon: 'droplet', tone: 'blue' },
+  { id: 'hazardous', label: 'Hazardous / Dangerous Goods', icon: 'triangle-alert', tone: 'red' },
+  { id: 'flammable', label: 'Flammable', icon: 'flame', tone: 'red' },
+  { id: 'aerosol', label: 'Aerosol / Pressurized', icon: 'spray-can', tone: 'blue' },
+  { id: 'battery', label: 'Battery / Lithium Battery', icon: 'battery-charging', tone: 'blue' },
+  { id: 'magnetic', label: 'Magnetic', icon: 'magnet', tone: 'blue' },
+  { id: 'perishable', label: 'Perishable', icon: 'apple', tone: 'blue' },
+  { id: 'temperature', label: 'Temperature Controlled', icon: 'thermometer', tone: 'blue' },
+  { id: 'oversized', label: 'Oversized / Heavy', icon: 'weight', tone: 'blue' },
+  { id: 'sharp', label: 'Sharp / Breakable', icon: 'scissors', tone: 'blue' },
+  { id: 'high-value', label: 'High-Value / Extra Security', icon: 'shield-check', tone: 'blue' },
+  { id: 'regulated', label: 'Regulated / Restricted', icon: 'badge-alert', tone: 'blue' },
+  { id: 'other', label: 'Other Special Handling', icon: 'circle-ellipsis', tone: 'blue' },
+];
+
+// Yoovic Shipping mock rates: base + perKg × total kg + perBox × boxes (no carrier API yet)
+const yoovicCarriers = [
+  { id: 'ups', name: 'UPS', service: 'Ground', delivery: '3–5 Days', base: 6.5, perKg: 0.55, perBox: 1.2, color: '#7a4a1e' },
+  { id: 'fedex', name: 'FedEx', service: 'Ground', delivery: '3–5 Days', base: 6.9, perKg: 0.58, perBox: 1.1, color: '#4d148c' },
+  { id: 'dhl', name: 'DHL', service: 'Express', delivery: '1–3 Days', base: 12, perKg: 0.9, perBox: 2, color: '#d40511' },
+  { id: 'usps', name: 'USPS', service: 'Priority', delivery: '2–4 Days', base: 7.5, perKg: 0.62, perBox: 0.9, color: '#004b87' },
+];
+
+// Carriers a seller can book themselves (Self-Arranged Shipping)
+const selfCarriers = ['UPS', 'FedEx', 'DHL', 'USPS', 'Aramex', 'Other'];
+
 // Used for FBY "Current Inventory" when the seller left FBM quantities empty
 const mockCurrentInventory = [200, 300, 80, 150, 120, 90];
 
@@ -150,4 +180,5 @@ const tips = {
 module.exports = {
   categories, brands, units, shippingTimes, handlingTimes, backorderOptions, variationAttributes,
   packagingTypes, warehouses, arrivalWindows, mediaLibrary, mockCurrentInventory, tips,
+  handlingCategories, yoovicCarriers, selfCarriers,
 };

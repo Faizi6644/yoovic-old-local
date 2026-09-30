@@ -4,18 +4,22 @@
   const PF = window.PF;
   const S = () => PF.state;
 
-  // ---- Steps: basic -> fbm | fby -> page3 ------------------------------------------------
+  // ---- Steps: basic -> fbm | fby -> page3 (FBM) / fby3 -> fby-done (FBY) ------------------
 
-  const STEPS = ['basic', 'fbm', 'fby', 'page3'];
+  const STEPS = ['basic', 'fbm', 'fby', 'fby3', 'fby-done', 'page3'];
 
   function allowed(step) {
     if (step === 'basic') return true;
     if (step === 'fbm' || step === 'fby') return PF.pageComplete('basic');
-    if (step === 'page3') return PF.pageComplete('basic') && PF.pageComplete(S().fulfillment);
+    if (step === 'page3') return PF.pageComplete('basic') && PF.pageComplete('fbm');
+    if (step === 'fby3') return PF.pageComplete('basic') && PF.pageComplete('fby');
+    if (step === 'fby-done') return Boolean(PF.submitted);
     return false;
   }
 
   PF.showStep = (step, opts = {}) => {
+    // A submitted product is read-only: only its success screen is shown
+    if (PF.submitted) step = 'fby-done';
     if (!STEPS.includes(step) || !allowed(step)) step = 'basic';
     if (step === 'fbm' || step === 'fby') {
       S().fulfillment = step;
@@ -30,9 +34,9 @@
     }
     S().step = step;
     PF.$$('.pf-step').forEach((el) => { el.hidden = el.dataset.step !== step; });
-    if (step === 'page3') {
-      PF.$('[data-page3-title]').textContent = S().fulfillment === 'fby' ? 'Page 3 – Barcodes & Shipping' : 'Page 3 – Review';
-    }
+    if (step === 'page3') PF.$('[data-page3-title]').textContent = 'Page 3 – Review';
+    if (step === 'fby3') PF.enterFby3();
+    if (step === 'fby-done') PF.renderFbyDone();
     PF.renderSections(step);
     if (!opts.fromHash && location.hash !== `#${step}`) history.pushState(null, '', `${location.pathname}${location.search}#${step}`);
     if (!opts.keepScroll) window.scrollTo({ top: 0 });
@@ -45,7 +49,7 @@
     const go = e.target.closest('[data-go]');
     if (!go || go.disabled) return;
     const target = go.dataset.go === 'fulfillment' ? S().fulfillment : go.dataset.go;
-    if (target === 'page3') saveDraft({ silent: true });
+    if (target === 'page3' || target === 'fby3') saveDraft({ silent: true });
     PF.showStep(target);
   });
 
@@ -151,6 +155,7 @@
   // ---- Save Draft ----------------------------------------------------------------------------
 
   let dirty = false;
+  PF.markClean = () => { dirty = false; };
   let saving = null;
   PF.on('change', () => { dirty = true; });
 
@@ -229,6 +234,7 @@
     PF.initVariations();
     PF.initFbm();
     PF.initFby();
+    PF.initFby3();
     PF.initSections();
     PF.showStep(location.hash.slice(1) || S().step || 'basic', { fromHash: true });
     dirty = false;

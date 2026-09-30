@@ -1,0 +1,37 @@
+<div class="pf-ship-methods">
+  <div class="pf-panel pf-ship-method" data-method-card="self">
+    <label class="pf-ship-method__head">
+      <input type="radio" name="fby3.method" value="self">
+      <span class="pf-radio" aria-hidden="true"></span>
+      <span><strong>Self-Arranged Shipping</strong><small>Seller arranges transportation independently.</small></span>
+    </label>
+    <div class="pf-ship-method__body" data-method-body="self">
+      <div class="pf-grid pf-grid--2">
+        <%- include('../../components/select', { page: 'fby3', label: 'Carrier', name: 'fby3.carrier', req: true, opts: options.selfCarriers }) %>
+        <div data-same-tracking>
+          <%- include('../../components/field', { page: 'fby3', label: 'Tracking Number', name: 'fby3.tracking', req: true, ph: 'Enter tracking number' }) %>
+        </div>
+      </div>
+      <div class="pf-choices pf-choices--stacked pf-tracking-mode" role="radiogroup" aria-label="Tracking numbers">
+        <label class="pf-choice"><input type="radio" name="fby3.trackingMode" value="same"><span class="pf-radio" aria-hidden="true"></span><span>Same Tracking Number For All Boxes</span></label>
+        <label class="pf-choice"><input type="radio" name="fby3.trackingMode" value="individual"><span class="pf-radio" aria-hidden="true"></span><span>Individual Tracking Number Per Box</span></label>
+      </div>
+      <div class="pf-per-box" data-box-tracking hidden></div>
+    </div>
+  </div>
+
+  <div class="pf-panel pf-ship-method" data-method-card="yoovic">
+    <label class="pf-ship-method__head">
+      <input type="radio" name="fby3.method" value="yoovic">
+      <span class="pf-radio" aria-hidden="true"></span>
+      <span><strong>Yoovic Shipping</strong><small>Get shipping rates and labels automatically through integrated carriers.</small></span>
+    </label>
+    <div class="pf-table-wrap">
+      <table class="pf-table pf-table--compact">
+        <thead><tr><th>Carrier</th><th>Service</th><th>Est. Delivery</th><th>Weight</th><th>Rate</th><th>Select</th></tr></thead>
+        <tbody data-carrier-rates></tbody>
+      </table>
+    </div>
+    <div class="pf-note"><i data-lucide="info"></i><span>Rates are automatically calculated using shipment dimensions, weight, box count, warehouse origin and destination. You do NOT need to re-enter dimensions and weight.</span></div>
+  </div>
+</div>

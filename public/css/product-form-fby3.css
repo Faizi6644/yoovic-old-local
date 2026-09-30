@@ -1,0 +1,153 @@
+/* ==========================================================================
+   FBY Page 3 — Barcodes, Handling & Shipping (builds on product-form.css)
+   ========================================================================== */
+
+.pf-lead--accent { color: var(--accent-2); font-weight: 500; }
+[data-section="z-handling"] .pf-count { color: var(--pf-red); }
+
+/* 1. Handling category grid */
+.pf-handling-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.pf-handling {
+  position: relative;
+  display: flex; align-items: center; gap: 10px;
+  min-height: 44px; padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--pf-panel-border);
+  background: var(--pf-panel-bg);
+  font-size: 11px; cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.pf-handling input { position: absolute; opacity: 0; pointer-events: none; }
+.pf-handling__icon { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; background: rgba(40, 110, 240, 0.18); color: #6fb4ff; flex-shrink: 0; }
+.pf-handling.tone-red .pf-handling__icon { background: rgba(255, 80, 110, 0.16); color: #ff7d8e; }
+.pf-handling__icon svg { width: 16px; height: 16px; }
+.pf-handling__label { flex: 1; min-width: 0; }
+.pf-handling .pf-radio { margin-left: auto; }
+.pf-handling:hover { border-color: rgba(110, 180, 255, 0.6); }
+.pf-handling:has(input:checked) { border-color: rgba(110, 190, 255, 0.95); background: rgba(40, 120, 255, 0.24); box-shadow: 0 0 12px rgba(60, 150, 255, 0.4); }
+.pf-handling:has(input:checked) .pf-radio,
+.pf-ship-method__head:has(input:checked) .pf-radio { border-color: var(--pf-cyan); }
+.pf-handling:has(input:checked) .pf-radio::after,
+.pf-ship-method__head:has(input:checked) .pf-radio::after {
+  content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--pf-cyan); box-shadow: 0 0 6px var(--pf-cyan);
+}
+.pf-handling:has(input:focus-visible) { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+.pf-help--muted { color: var(--text-2); margin-top: 6px; }
+
+/* Barcodes: always black on white so they scan */
+.pf-barcode { display: inline-flex; padding: 2px; border-radius: 4px; background: #fff; line-height: 0; }
+.pf-barcode svg { display: block; height: 44px; width: auto; max-width: 190px; }
+.pf-barcode--lg svg { height: 96px; max-width: 100%; }
+.pf-table--barcodes td { vertical-align: middle; }
+.pf-table--barcodes .pf-select { min-width: 170px; }
+.pf-row-click { cursor: pointer; }
+.pf-row-click:focus-visible { outline: 2px solid var(--accent-2); outline-offset: -2px; }
+
+/* 3. Scan panel */
+.pf-split--scan { grid-template-columns: minmax(0, 2fr) minmax(250px, 1fr); align-items: start; }
+.pf-scan__input { margin-bottom: 10px; }
+.pf-kv--left dd { text-align: left; }
+.pf-scan .pf-kv { grid-template-columns: auto 1fr; gap: 5px 12px; }
+
+/* 4. Master cartons */
+.pf-master-list { display: flex; flex-direction: column; gap: 10px; }
+.pf-master-card {
+  display: grid; grid-template-columns: auto minmax(0, 1.4fr) minmax(0, 1fr) auto; align-items: center; gap: 16px;
+  padding: 12px; border-radius: 8px; border: 1px solid var(--pf-panel-border); background: var(--pf-panel-bg);
+}
+.pf-master-card__icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 8px; background: linear-gradient(145deg, #c9905a, #8a5a2e); color: #fff3e3; }
+.pf-master-card__icon svg { width: 30px; height: 30px; }
+.pf-master-card__code { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; font-size: 12px; }
+.pf-master-card__boxes { font-size: 10.5px; color: var(--text-2); }
+.pf-master-card__boxes ul { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; }
+.pf-master-card__boxes li { display: flex; align-items: center; gap: 6px; color: #9fd4ff; }
+.pf-master-card__boxes li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-2); }
+
+/* 5. Summary cards */
+.pf-bc-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.pf-bc-card { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--pf-panel-border); background: var(--pf-panel-bg); }
+.pf-bc-card small { display: block; font-size: 10.5px; color: var(--text-2); }
+.pf-bc-card strong { font-size: 13px; color: var(--pf-green); }
+
+/* 6. Shipping methods */
+.pf-ship-methods { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 12px; align-items: start; }
+.pf-ship-method { transition: border-color 0.15s, box-shadow 0.15s; }
+.pf-ship-method.is-active { border-color: rgba(110, 190, 255, 0.95); box-shadow: 0 0 14px rgba(60, 150, 255, 0.35); }
+.pf-ship-method:not(.is-active) .pf-ship-method__body { opacity: 0.5; }
+.pf-ship-method__head { position: relative; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; cursor: pointer; }
+.pf-ship-method__head input { position: absolute; opacity: 0; pointer-events: none; }
+.pf-ship-method__head strong { display: block; font-size: 13px; color: var(--accent-2); }
+.pf-ship-method__head small { display: block; font-size: 10.5px; color: var(--text-2); margin-top: 2px; }
+.pf-ship-method__head .pf-radio { margin-top: 2px; }
+.pf-ship-method__head:has(input:focus-visible) { outline: 2px solid var(--accent-2); outline-offset: 2px; border-radius: 6px; }
+.pf-tracking-mode { margin-top: 12px; }
+.pf-carrier { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+.pf-carrier__dot { width: 10px; height: 10px; border-radius: 3px; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25); }
+
+/* 7. Labels */
+.pf-label-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 10px; }
+.pf-label-strip > div { padding: 10px 12px; border-radius: 8px; border: 1px solid var(--pf-panel-border); background: var(--pf-panel-bg); }
+.pf-label-strip small { display: block; font-size: 10px; color: var(--text-2); margin-bottom: 3px; }
+.pf-label-strip strong { display: flex; align-items: center; gap: 5px; font-size: 12.5px; }
+.pf-label-strip svg { width: 14px; height: 14px; }
+.pf-label-strip .is-ok { color: var(--pf-green); }
+.pf-label-strip .is-bad { color: var(--pf-red); }
+.pf-label-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.pf-label-title { margin-bottom: 8px; }
+.pf-label-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.pf-label-card { display: flex; gap: 12px; padding: 10px; border-radius: 8px; border: 1px solid var(--pf-panel-border); background: var(--pf-panel-bg); }
+.pf-label-thumb { width: 96px; height: 144px; flex-shrink: 0; overflow: hidden; border-radius: 4px; background: #fff; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35); }
+.pf-label-thumb__inner { width: 4in; transform: scale(0.25); transform-origin: top left; }
+.pf-label-card__info { display: flex; flex-direction: column; gap: 3px; min-width: 0; font-size: 10.5px; color: var(--text-2); }
+.pf-label-card__info strong { font-size: 12.5px; color: var(--text); margin-bottom: 2px; }
+.pf-label-card__info span { overflow-wrap: anywhere; }
+.pf-label-card__info .pf-edit-btn { margin-top: auto; align-self: flex-start; }
+.pf-label-empty, .pf-label-more { grid-column: 1 / -1; font-size: 11px; }
+.pf-label-preview { display: flex; justify-content: center; padding: 8px; overflow-x: auto; }
+.pf-label-preview .yv-label { box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45); }
+
+/* Barcode preview dialog */
+.pf-bc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.pf-bc-tile { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 12px; border-radius: 8px; border: 1px solid var(--pf-panel-border); background: var(--pf-panel-bg); text-align: center; }
+.pf-bc-tile strong { font-size: 12.5px; }
+.pf-bc-tile small { font-size: 10px; color: var(--text-2); }
+.pf-bc-tile .pf-barcode { margin-top: 6px; }
+
+/* 8. Review */
+.pf-review { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr) minmax(0, 1fr); gap: 12px; }
+.pf-review__product { display: flex; gap: 14px; align-items: flex-start; }
+.pf-review__img { width: 90px; height: 90px; border-radius: 8px; object-fit: cover; background: #fff; border: 1px solid rgba(110, 180, 255, 0.45); flex-shrink: 0; }
+.pf-checklist { display: flex; flex-direction: column; gap: 7px; font-size: 11px; }
+.pf-checklist li { display: flex; align-items: center; gap: 8px; }
+.pf-checklist svg { width: 15px; height: 15px; flex-shrink: 0; }
+.pf-checklist .is-ok svg { color: var(--pf-green); }
+.pf-checklist .is-bad { color: #ff9aa8; }
+.pf-checklist .is-bad svg { color: var(--pf-red); }
+.pf-btn-submit { min-width: 210px; }
+
+/* Success screen */
+.pf-done { align-items: center; text-align: center; padding: 36px 20px; }
+.pf-done__icon { display: grid; place-items: center; width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(145deg, #3be6a0, #11a86b); box-shadow: 0 0 26px rgba(59, 230, 160, 0.55); }
+.pf-done__icon svg { width: 36px; height: 36px; stroke-width: 3; }
+.pf-done__id { font-size: 14px; color: var(--text-2); }
+.pf-done__id strong { color: var(--pf-green); font-size: 18px; letter-spacing: 0.5px; }
+.pf-done__summary { width: min(560px, 100%); text-align: left; }
+.pf-done__actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+@media (max-width: 1280px) {
+  .pf-handling-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .pf-label-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .pf-review { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pf-review > :last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 1100px) {
+  .pf-split--scan, .pf-ship-methods { grid-template-columns: minmax(0, 1fr); }
+  .pf-label-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pf-master-card { grid-template-columns: auto minmax(0, 1fr); }
+  .pf-master-card > :nth-child(n + 3) { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  .pf-handling-grid, .pf-label-cards, .pf-review { grid-template-columns: minmax(0, 1fr); }
+  .pf-label-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pf-review__product { flex-direction: column; }
+}

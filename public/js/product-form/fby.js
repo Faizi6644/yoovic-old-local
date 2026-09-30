@@ -383,6 +383,43 @@
   PF.summaries['y-arrival'] = () => `${F().arrivalDate}${F().arrivalWindow ? ` · ${F().arrivalWindow}` : ''}${F().tracking ? ` · Tracking ${F().tracking}` : ''}`;
   PF.summaries['y-summary'] = () => 'All information is valid';
 
+  // Everything Page 3 needs from this page, computed with the same allocation used here
+  PF.fbyPlan = () => {
+    const { boxes } = allocate();
+    const f = F();
+    const perBoxDims = (i) => (f.sameDims ? f : (f.boxDims[i] || {}));
+    const planBoxes = boxes.map((b, i) => {
+      const d = perBoxDims(i);
+      return {
+        index: i,
+        label: `Box ${String(i + 1).padStart(2, '0')}`,
+        items: b.items.map((it) => ({ unit: it.unit, qty: it.qty })),
+        qty: b.items.reduce((a, it) => a + it.qty, 0),
+        weight: PF.num(d.weight),
+        dims: [PF.num(d.length), PF.num(d.width), PF.num(d.height)],
+      };
+    });
+    const masters = [];
+    if (f.useMaster === 'yes') {
+      const per = PF.int(f.boxesPerMaster);
+      for (let c = 0; c < PF.int(f.masterCount); c += 1) {
+        masters.push({ index: c, label: `Master Carton ${String(c + 1).padStart(2, '0')}`, boxes: planBoxes.slice(c * per, c * per + per).map((b) => b.index) });
+      }
+    }
+    return {
+      units: selectedUnits().map((u) => ({ unit: u, qty: sendQty(u) })),
+      totalUnits: totalUnits(),
+      boxes: planBoxes,
+      dimUnit: unitLabel(),
+      weightUnit: weightLabel(),
+      totalWeight: planBoxes.reduce((a, b) => a + b.weight, 0),
+      masters,
+      warehouse: (PF.options.warehouses || []).find((w) => w.id === f.warehouse) || null,
+      arrivalDate: f.arrivalDate,
+      arrivalWindow: f.arrivalWindow,
+    };
+  };
+
   PF.initFby = () => {
     renderAll();
     PF.on('variations-changed', renderAll);

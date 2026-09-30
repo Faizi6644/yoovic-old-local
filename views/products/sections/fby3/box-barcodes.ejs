@@ -1,0 +1,17 @@
+<div class="pf-split pf-split--scan">
+  <div class="pf-table-wrap">
+    <table class="pf-table pf-table--barcodes">
+      <thead><tr><th>Box</th><th>Contents</th><th>Quantity</th><th>Weight</th><th>Barcode</th><th class="pf-col-actions">Action</th></tr></thead>
+      <tbody data-box-barcodes></tbody>
+    </table>
+  </div>
+  <div class="pf-panel pf-scan">
+    <h3 class="pf-panel__title"><i data-lucide="scan-barcode"></i> Scan Box Barcode</h3>
+    <div class="pf-control pf-search pf-scan__input">
+      <i data-lucide="scan-line"></i>
+      <input class="pf-input" data-box-scan inputmode="numeric" placeholder="Scan or type a box barcode" aria-label="Scan or type a box barcode">
+    </div>
+    <p class="pf-error" data-box-scan-error hidden></p>
+    <dl class="pf-kv pf-kv--left" data-box-details></dl>
+  </div>
+</div>

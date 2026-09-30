@@ -40,7 +40,16 @@
       tracking: '', arrivalDate: '', arrivalWindow: '',
       validation: null,
     },
-    progress: { basic: {}, fbm: {}, fby: {} },
+    // FBY Page 3 — Barcodes, Handling & Shipping
+    fby3: {
+      handling: 'standard', applyAll: true, perVariation: {},
+      barcodes: { variation: {}, box: [], master: [] },   // unique codes from the server, kept once assigned
+      selectedBox: 0,
+      method: 'self', carrier: 'UPS', trackingMode: 'same', tracking: '', boxTracking: [],
+      yoovicCarrier: '', yoovicTracking: [],
+      labelsGenerated: false, labelsKey: '',
+    },
+    progress: { basic: {}, fbm: {}, fby: {}, fby3: {} },
   });
 
   // Deep-merge saved data over defaults so new fields always exist
@@ -56,6 +65,9 @@
   }
   PF.state = merge(PF.defaultState(), PF.initialDraft && PF.initialDraft.data);
   PF.draftId = PF.initialDraft ? PF.initialDraft.id : null;
+  // Set when the listing was already submitted: the page opens read-only on the success screen
+  PF.submitted = PF.initialDraft && PF.initialDraft.status === 'submitted'
+    ? (PF.initialDraft.shipment || (PF.state.shipment || {})) : null;
 
   // Paths: "basic.nameEn" or "var:<variationId>.image" (variation fields by id, stable across deletes)
   function resolve(path) {

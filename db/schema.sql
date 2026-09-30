@@ -1,6 +1,8 @@
 -- Yoovic Seller Central schema (MySQL 5.7+ / MariaDB 10.3+)
 
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS fby_shipments;
+DROP TABLE IF EXISTS barcodes;
 DROP TABLE IF EXISTS product_listings;
 DROP TABLE IF EXISTS refund_requests;
 DROP TABLE IF EXISTS hero_backgrounds;
@@ -130,6 +132,39 @@ CREATE TABLE product_listings (
   updated_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY idx_listings_seller_status (seller_id, status),
   CONSTRAINT fk_listings_seller FOREIGN KEY (seller_id) REFERENCES sellers(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Unique 12-digit barcode numbers (Code 128) for variations, boxes and master cartons
+-- (also applied by db/migrate-fby-shipments.js)
+CREATE TABLE barcodes (
+  id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  seller_id   INT UNSIGNED NOT NULL,
+  listing_id  INT UNSIGNED NULL,
+  kind        ENUM('variation','box','master') NOT NULL,
+  code        CHAR(12)     NULL UNIQUE,
+  created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_barcodes_listing (listing_id),
+  CONSTRAINT fk_barcodes_seller FOREIGN KEY (seller_id) REFERENCES sellers(id) ON DELETE CASCADE,
+  CONSTRAINT fk_barcodes_listing FOREIGN KEY (listing_id) REFERENCES product_listings(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Submitted FBY shipments (FBY Page 3 → Submit)
+CREATE TABLE fby_shipments (
+  id             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  seller_id      INT UNSIGNED  NOT NULL,
+  listing_id     INT UNSIGNED  NOT NULL,
+  shipment_code  VARCHAR(20)   NULL UNIQUE,
+  status         ENUM('submitted','received','cancelled') NOT NULL DEFAULT 'submitted',
+  warehouse_id   VARCHAR(40)   NOT NULL,
+  total_units    INT UNSIGNED  NOT NULL,
+  total_boxes    INT UNSIGNED  NOT NULL,
+  shipping_method ENUM('self','yoovic') NOT NULL,
+  carrier        VARCHAR(40)   NOT NULL,
+  data           LONGTEXT      NOT NULL COMMENT 'Shipment snapshot as JSON',
+  created_at     DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_shipments_seller (seller_id, created_at),
+  CONSTRAINT fk_shipments_seller FOREIGN KEY (seller_id) REFERENCES sellers(id) ON DELETE CASCADE,
+  CONSTRAINT fk_shipments_listing FOREIGN KEY (listing_id) REFERENCES product_listings(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Refund requests raised against orders

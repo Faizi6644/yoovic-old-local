@@ -17,10 +17,12 @@ router.get('/products/add', async (req, res, next) => {
       products.getFormOptions(),
       draftId ? products.getListing(SELLER_ID, draftId) : null,
     ]);
+    // A submitted listing opens read-only on its success screen
+    const shipment = listing && listing.status === 'submitted' ? await products.getShipmentForListing(SELLER_ID, listing.id) : null;
     res.render('products/add', {
       ...layout,
       options,
-      draft: listing && listing.status === 'draft' ? { id: listing.id, data: listing.data } : null,
+      draft: listing ? { id: listing.id, data: listing.data, status: listing.status, shipment } : null,
       draftMissing: Boolean(draftId && !listing),
       active: 'products/add',
     });
@@ -56,6 +58,40 @@ api.put('/drafts/:id', async (req, res, next) => {
     const id = await products.saveDraft(SELLER_ID, Number(req.params.id), req.body.data);
     if (!id) return res.status(404).json({ error: 'Draft not found.' });
     res.json({ id, savedAt: new Date().toISOString() });
+  } catch (err) { next(err); }
+});
+
+// FBY Page 3: allocate unique barcode numbers. Body: { variation, box, master } counts
+api.post('/drafts/:id/barcodes', async (req, res, next) => {
+  try {
+    const codes = await products.allocateBarcodes(SELLER_ID, Number(req.params.id), req.body || {});
+    if (!codes) return res.status(404).json({ error: 'Draft not found.' });
+    res.status(201).json(codes);
+  } catch (err) { next(err); }
+});
+
+// FBY Page 3: submit the shipment. Body: { data, summary }
+api.post('/drafts/:id/submit-fby', async (req, res, next) => {
+  try {
+    const { data, summary } = req.body || {};
+    const problems = [];
+    if (!data || typeof data !== 'object' || data.fulfillment !== 'fby') problems.push('The product is not set to FBY.');
+    if (!summary || typeof summary !== 'object') problems.push('Missing shipment summary.');
+    else {
+      if (!(summary.totalUnits > 0)) problems.push('No units selected to send.');
+      if (!(summary.totalBoxes > 0)) problems.push('No boxes configured.');
+      if (!summary.warehouse) problems.push('No warehouse selected.');
+      if (!['self', 'yoovic'].includes(summary.method)) problems.push('No shipping method selected.');
+      if (!summary.carrier) problems.push('No carrier selected.');
+      if (!Array.isArray(summary.boxes) || summary.boxes.length !== summary.totalBoxes || summary.boxes.some((b) => !b.barcode || !b.tracking)) {
+        problems.push('Every box needs a barcode and a tracking number.');
+      }
+      if (!summary.labelsGenerated) problems.push('Shipping labels have not been generated.');
+    }
+    if (problems.length) return res.status(400).json({ error: problems.join(' ') });
+    const code = await products.submitFbyShipment(SELLER_ID, Number(req.params.id), data, summary);
+    if (!code) return res.status(404).json({ error: 'Draft not found or already submitted.' });
+    res.status(201).json({ shipmentCode: code });
   } catch (err) { next(err); }
 });
 

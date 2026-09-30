@@ -1,0 +1,16 @@
+<div class="pf-handling-grid" role="radiogroup" aria-label="Product handling category">
+  <% options.handlingCategories.forEach((c) => { %>
+    <label class="pf-handling tone-<%= c.tone %>">
+      <input type="radio" name="fby3.handling" value="<%= c.id %>">
+      <span class="pf-handling__icon"><i data-lucide="<%= c.icon %>"></i></span>
+      <span class="pf-handling__label"><%= c.label %></span>
+      <span class="pf-radio" aria-hidden="true"></span>
+    </label>
+  <% }) %>
+</div>
+<label class="pf-check">
+  <input type="checkbox" name="fby3.applyAll">
+  <span class="pf-check__box" aria-hidden="true"><i data-lucide="check"></i></span>
+  <span>Apply selected handling category to all variations</span>
+</label>
+<p class="pf-help pf-help--muted" data-handling-hint hidden>Choose a handling category for each variation in the next section.</p>
